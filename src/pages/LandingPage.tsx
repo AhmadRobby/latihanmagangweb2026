@@ -1,20 +1,13 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion, Variants } from "framer-motion";
 import { 
-  Laptop, Code, Database, 
-  Wifi, MonitorPlay, BookOpen, 
-  Trophy, Medal, Star, Image as ImageIcon,
-  Menu // icon menu buat tombol sidebar hape
+Laptop, Code, Database, 
+Wifi, MonitorPlay, BookOpen, 
+Trophy, Medal, Star
 } from "lucide-react";
-
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import Navbar from "@/pages/Navbar"; 
 
 // DATA DUMMY ROBBY //
 const kelas = [
@@ -47,94 +40,10 @@ const staggerContainer: Variants = {
 };
 
 export default function LandingPage() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Just for buka/tutup sidebar
-
-  const navLinks = [
-    { href: "#home", label: "Home" },
-    { href: "#kelas", label: "Program Studi" },
-    { href: "#fasilitas", label: "Fasilitas" },
-    { href: "#prestasi", label: "Prestasi" },
-  ];
-
   return (
     <div className="min-h-screen bg-white font-sans overflow-x-hidden">
-      {/* NAVBARS */}
-      <nav className="flex items-center justify-between px-6 py-4 border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        
-        {/* LOGO KAMPUS STIMATA*/}
-        <Link to="/" className="flex items-center gap-3">
-        
-        <img 
-            src="/logo-stimata.png" 
-            alt="Logo STIMATA" 
-            className="w-10 h-10 object-contain" 
-        />
-        <div className="text-xl font-bold text-blue-700 tracking-tight">PMB STIMATA</div>
-        </Link>
-        
-        {/* Menu Navigasi Tengah (DESKTOP) */}
-        <div className="hidden md:flex space-x-8 text-sm font-medium text-slate-600">
-          {navLinks.map((link, index) => (
-            <a key={index} href={link.href} className="hover:text-blue-600 transition-colors">
-              {link.label}
-            </a>
-          ))}
-        </div>
-
-        {/* Tombol Kanan (DESKTOP) */}
-        <div className="hidden md:flex space-x-3">
-          <Link to="/login"><Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">Masuk</Button></Link>
-          <Link to="/signup"><Button className="bg-blue-600 hover:bg-blue-700 text-white">Daftar</Button></Link>
-        </div>
-
-        {/* --- 2. TOMBOL MENU MOBILE --- */}
-        <div className="md:hidden">
-        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-        <SheetTrigger className="p-2 rounded-md hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400">
-        <Menu className="w-6 h-6 text-slate-600" />
-        </SheetTrigger>    
-        <SheetContent side="right" className="w-[300px] bg-white p-0">
-
-    <div className="flex flex-col h-full">
-    {/* HEADER SIDEBAR */}
-    <div className="flex items-center gap-3 px-6 py-6 border-b">
-    <div className="text-xl font-bold text-blue-700 tracking-tight">
-    Discover Us!
-    </div>
-    </div>
-    
-    {/* LINK NAVIGASI */}
-    <div className="flex flex-col space-y-2 p-4">
-      {navLinks.map((link, index) => (
-        <a 
-          key={index} 
-          href={link.href} 
-          className="px-4 py-3 text-lg font-medium text-slate-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
-          onClick={() => setIsMobileMenuOpen(false)}
-        >
-          {link.label}
-        </a>
-      ))}
-    </div>
-    
-    {/* TOMBOL ACTION */}
-    <div className="mt-auto p-6 border-t space-y-3">
-    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-    <Button variant="outline" className="w-full h-12 border-blue-600 text-blue-600 font-semibold text-base">
-    Masuk
-    </Button>
-    </Link>
-    <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-    <Button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base">
-    Daftar
-    </Button>
-    </Link>
-    </div>
-    </div>
-    </SheetContent>
-    </Sheet>
-    </div>
-    </nav>
+      
+      <Navbar />
 
       {/* HERO SECTION */}
       <motion.main 
@@ -153,10 +62,15 @@ export default function LandingPage() {
             <Link to="/signup"><Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20">Mulai Pendaftaran</Button></Link>
           </div>
         </div>
-        <div className="flex-1 w-full">
-          <div className="bg-blue-50 border border-blue-100 rounded-3xl w-full aspect-video flex flex-col items-center justify-center text-blue-300 shadow-xl shadow-blue-500/10">
-            <ImageIcon className="w-20 h-20 mb-4 opacity-50" />
-            <p className="text-sm font-medium">Video/Foto Kampus STIMATA</p>
+        <div className="flex-1 w-full mt-10 md:mt-0">
+          <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl border-t-2 border-blue-100/50 bg-slate-100">
+            <iframe
+              className="absolute inset-0 w-full h-full object-cover"
+              src="https://www.youtube.com/embed/agneRtEe-t8?si=Po0b6qjG3p9hSjW0"
+              title="STIMATA Campus Tour"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           </div>
         </div>
       </motion.main>
