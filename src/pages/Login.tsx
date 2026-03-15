@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -20,8 +20,11 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  const [apiError, setApiError] = useState("");
+  const [apiError, setApiError] = useState(""); 
+
+  const successMessage = location.state?.successMessage;
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -55,7 +58,14 @@ export default function Login() {
         </CardDescription>
         </CardHeader>
         
+        
         <CardContent>
+          {successMessage && (
+            <div className="mb-4 p-3 bg-green-100 text-green-700 text-sm rounded-lg text-center font-medium border border-green-200">
+              ✅ {successMessage}
+            </div>
+          )}
+
           {apiError && (
             <div className="mb-4 p-3 bg-destructive/10 text-destructive text-sm rounded-lg text-center font-medium">
               {apiError}
