@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuthStore } from '@/stores/authStore';
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,12 +16,12 @@ import { motion } from "framer-motion";
       <motion.div
         className="absolute top-[-20%] left-[-20%] w-[80vw] h-[80vw] bg-blue-500/70 rounded-full filter blur-2xl opacity-80"
         animate={{
-          x: [0, 150, 0],
-          y: [0, 80, 0],
-          scale: [1, 1.3, 1],
+          x: [0, 100, 0],
+          y: [0, 50, 0],
+          scale: [1, 1.2, 1],
         }}
         transition={{ 
-          duration: 12,
+          duration: 15,
           repeat: Infinity, 
           ease: "easeInOut" 
         }}
@@ -28,29 +29,29 @@ import { motion } from "framer-motion";
       <motion.div
         className="absolute bottom-[-20%] right-[-20%] w-[90vw] h-[90vw] bg-cyan-400/60 rounded-full filter blur-2xl opacity-70"
         animate={{
-          x: [0, -180, 0],
-          y: [0, -100, 0],
-          scale: [1, 1.4, 1],
-        }}
-        transition={{ 
-          duration: 15, 
-          repeat: Infinity, 
-          ease: "easeInOut",
-          delay: 1 
-        }}
-      />
-      <motion.div
-        className="absolute top-[30%] left-[10%] w-[60vw] h-[60vw] bg-indigo-500/50 rounded-full filter blur-xl opacity-60"
-        animate={{
-          x: [0, 100, -80, 0],
-          y: [0, 120, 0],
-          scale: [1, 1.2, 1],
+          x: [0, -120, 0],
+          y: [0, -60, 0],
+          scale: [1, 1.3, 1],
         }}
         transition={{ 
           duration: 18, 
           repeat: Infinity, 
           ease: "easeInOut",
           delay: 2 
+        }}
+      />
+      <motion.div
+        className="absolute top-[30%] left-[10%] w-[60vw] h-[60vw] bg-indigo-500/50 rounded-full filter blur-xl opacity-60"
+        animate={{
+            x: [0, 80, -40, 0],
+          y: [0, 90, 0],
+          scale: [1, 1.4, 1],
+        }}
+        transition={{ 
+          duration: 20, 
+          repeat: Infinity, 
+          ease: "easeInOut",
+          delay: 4 
         }}
       />
     </div>
@@ -69,6 +70,7 @@ export default function Login() {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState(""); 
+  const loginAction = useAuthStore((state) => state.login);
 
   const successMessage = location.state?.successMessage;
 
@@ -83,10 +85,30 @@ export default function Login() {
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     setApiError("");
+    
+    // Simulasi loading API 2 detik
     setTimeout(() => {
       setIsLoading(false);
+      
+      // AKUN MAHASISWA
       if (data.email === "robby@stimata.ac.id" && data.password === "123456") {
+         loginAction({ 
+           id: "1", 
+           name: "Robby", 
+           email: data.email, 
+           role: "MHS" 
+         });
          navigate("/dashboard");
+      } 
+      // AKUN ADMIN
+      else if (data.email === "ahmad@stimata.ac.id" && data.password === "admin123") {
+         loginAction({ 
+           id: "2", 
+           name: "Bapak Ahmad", 
+           email: data.email, 
+           role: "ADMIN" 
+         });
+         navigate("/admin");
       } else {
          setApiError("Email atau password salah. Silakan coba lagi!");
       }
@@ -105,8 +127,6 @@ export default function Login() {
           Masukkan email dan password yang telah Anda daftarkan!
         </CardDescription>
         </CardHeader>
-        
-        
         <CardContent>
           {successMessage && (
             <div className="mb-4 p-3 bg-green-100 text-green-700 text-sm rounded-lg text-center font-medium border border-green-200">
