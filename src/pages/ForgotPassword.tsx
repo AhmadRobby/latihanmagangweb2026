@@ -7,8 +7,56 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 
+const BackgroundAnimation = () => {
+  return (
+    <div className="fixed inset-0 overflow-hidden z-0 pointer-events-none w-screen h-screen bg-gray-50">
+      <motion.div
+        className="absolute top-[-20%] left-[-20%] w-[80vw] h-[80vw] bg-blue-500/70 rounded-full filter blur-2xl opacity-80"
+        animate={{
+          x: [0, 100, 0],
+          y: [0, 50, 0],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{ 
+          duration: 15,
+          repeat: Infinity, 
+          ease: "easeInOut" 
+        }}
+      />
+      <motion.div
+        className="absolute bottom-[-20%] right-[-20%] w-[90vw] h-[90vw] bg-cyan-400/60 rounded-full filter blur-2xl opacity-70"
+        animate={{
+          x: [0, -120, 0],
+          y: [0, -60, 0],
+          scale: [1, 1.3, 1],
+        }}
+        transition={{ 
+          duration: 18, 
+          repeat: Infinity, 
+          ease: "easeInOut",
+          delay: 2 
+        }}
+      />
+      <motion.div
+        className="absolute top-[30%] left-[10%] w-[60vw] h-[60vw] bg-indigo-500/50 rounded-full filter blur-xl opacity-60"
+        animate={{
+            x: [0, 80, -40, 0],
+          y: [0, 90, 0],
+          scale: [1, 1.4, 1],
+        }}
+        transition={{ 
+          duration: 20, 
+          repeat: Infinity, 
+          ease: "easeInOut",
+          delay: 4 
+        }}
+      />
+    </div>
+  );
+};
 const forgotPasswordSchema = z.object({
   email: z.string().min(1, { message: "Email wajib diisi!" }).email({ message: "Format email tidak valid!" }),
 });
@@ -36,7 +84,7 @@ export default function ForgotPassword() {
       setIsLoading(false);
       if (data.email === "robby@stimata.ac.id") {
         // jika email ada, go to Login dan muncul pesan sukses
-        navigate("/", { state: { successMessage: "Instruksi reset password telah dikirim ke email Anda!" } });
+        navigate("/login", { state: { successMessage: "Link reset telah dikirim ke email Anda" } });
       } else {
         // lek semisal email gaada
         setApiError("Email tidak terdaftar di sistem kami.");
@@ -45,8 +93,9 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
-      <Card className="w-full max-w-md shadow-lg border-t-4 border-indigo-600">
+  <div className="relative flex items-center justify-center min-h-screen w-full max-w-[100vw] bg-gray-50 p-4 sm:p-6 overflow-hidden">
+        <BackgroundAnimation />
+        <Card className="w-full max-w-md shadow-lg border-t-4 border-indigo-600 z-10 bg-white/90 backdrop-blur-sm">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Lupa Password?</CardTitle>
           <CardDescription className="text-center">

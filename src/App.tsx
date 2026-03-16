@@ -7,6 +7,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import LandingPage from "./pages/LandingPage";
 import DaftarPilihJalur from "./pages/DaftarPilihJalur"; 
+import ResetPassword from "./pages/ResetPassword";
 
 import { useAuthStore } from "@/stores/authStore"; 
 import { ProtectedRoute, AdminRoute } from "@/components/routes/GuardRoutes"; 
@@ -115,6 +116,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/verify-email" element={<VerifyEmail />} /> 
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* PROTECTED ROUTES */}
         <Route element={<ProtectedRoute />}>
