@@ -25,6 +25,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "#home", label: "Home" },
+    { href: "#alur", label: "Alur Pendaftaran" },
     { href: "#kelas", label: "Program Studi" },
     { href: "#fasilitas", label: "Fasilitas" },
     { href: "#prestasi", label: "Prestasi" },
