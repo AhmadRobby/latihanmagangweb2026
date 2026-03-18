@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,8 @@ import {
   BookOpen,
   ChevronRight,
   LogOut,
-  ClipboardList
+  ClipboardList,
+  ArrowLeft
 } from "lucide-react";
 
 type RegistrationStatus = "DRAFT" | "SUBMITTED" | "SELEKSI" | "REVIEW" | "REVISI" | "MENUNGGU_PEMBAYARAN" | "DITERIMA";
@@ -113,7 +114,7 @@ export default function DashboardMahasiswa() {
     logout();
     localStorage.removeItem("jalurPilihan");
     localStorage.removeItem("statusPendaftaran");
-    localStorage.removeItem("temp-user-data"); // Hapus cache pas logout
+    localStorage.removeItem("temp-user-data");
     navigate("/login");
   };
 
@@ -159,6 +160,17 @@ export default function DashboardMahasiswa() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
+        <Button 
+          variant="ghost" 
+          onClick={() => {
+            localStorage.removeItem("statusPendaftaran"); 
+            localStorage.removeItem("jalurPilihan"); 
+            window.scrollTo(0, 0); 
+            navigate("/daftar"); 
+          }} 
+          className="mb-2 -ml-2 sm:-ml-4 text-slate-500 hover:text-amber-600 hover:bg-amber-50">
+          <ArrowLeft className="w-4 h-4 mr-2" /> Kembali ke Pemilihan Jalur
+        </Button>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <Card className="shadow-sm border-gray-200 bg-white">

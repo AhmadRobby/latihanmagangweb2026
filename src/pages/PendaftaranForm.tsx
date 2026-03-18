@@ -132,15 +132,13 @@ const handleSubmit = async () => {
         
         {/* TOMBOL KEMBALI */}
         <Button 
-          variant="ghost" 
-          onClick={() => {
-            localStorage.removeItem("statusPendaftaran"); 
-            localStorage.removeItem("jalurPilihan"); 
-            window.scrollTo(0, 0); 
-            navigate("/daftar"); 
-          }} 
-          className="mb-6 text-slate-600 hover:text-amber-600 hover:bg-amber-50 px-0 sm:px-4">
-          <ArrowLeft className="w-4 h-4 mr-2" /> Kembali ke Pemilihan Jalur
+        variant="ghost" 
+        onClick={() => {
+        window.scrollTo(0, 0); 
+        navigate("/dashboard"); 
+      }} 
+        className="mb-6 text-slate-600 hover:text-amber-600 hover:bg-amber-50 px-0 sm:px-4">
+        <ArrowLeft className="w-4 h-4 mr-2" /> Kembali ke Dashboard
         </Button>
 
         {/* HEADER */}
