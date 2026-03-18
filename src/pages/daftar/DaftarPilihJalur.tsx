@@ -76,8 +76,6 @@ export default function DaftarPilihJalur() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          
-          {/* CARD REGULER - AMBER THEME */}
           <Card className="relative overflow-hidden border border-slate-200 bg-white/80 backdrop-blur-sm hover:border-amber-400 transition-all duration-300 hover:shadow-2xl hover:shadow-amber-500/10 group flex flex-col h-full">
             <CardHeader className="text-center pb-2 pt-8">
               <div className="mx-auto bg-amber-50 border border-amber-100 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-300 shadow-sm">

@@ -307,7 +307,8 @@ export default function DashboardMahasiswa() {
                   </Button>
                 )}
                 {data.status === "SUBMITTED" && (
-                  <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white shadow-sm transition-all">
+                  <Button onClick={() => navigate("/daftar/dokumen")}
+                  className="w-full bg-amber-500 hover:bg-amber-600 text-white shadow-sm transition-all">
                     Upload Dokumen <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 )}
@@ -322,7 +323,8 @@ export default function DashboardMahasiswa() {
                   </Button>
                 )}
                 {data.status === "REVISI" && (
-                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white shadow-sm transition-all">
+                  <Button onClick={() => navigate("/daftar/dokumen")}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white shadow-sm transition-all">
                     Perbaiki Dokumen <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 )}
@@ -332,8 +334,8 @@ export default function DashboardMahasiswa() {
                   </Button>
                 )}
                 {data.status === "DITERIMA" && (
-                  <Button variant="outline" className="w-full border-slate-200 hover:bg-slate-50 text-slate-800 shadow-sm transition-all">
-                    Join Komunitas Whatsapp
+                   <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white shadow-sm transition-all">
+                    Join Komunitas Whatsapp <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 )}
               </CardContent>

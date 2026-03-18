@@ -10,9 +10,10 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
 import LandingPage from "./pages/LandingPage";
-import DaftarPilihJalur from "./pages/DaftarPilihJalur"; 
+import DaftarPilihJalur from "./pages/daftar/DaftarPilihJalur"; 
 import PendaftaranForm from "./pages/PendaftaranForm"; 
 import DashboardMahasiswa from "./pages/DashboardMahasiswa"; 
+import UploadDokumen from "./pages/daftar/UploadDokumen";
 
 
 import { useAuthStore } from "@/stores/authStore"; 
@@ -55,6 +56,7 @@ function App() {
           <Route path="/dashboard" element={<DashboardMahasiswa />} /> 
           <Route path="/daftar" element={<DaftarPilihJalur />} />
           <Route path="/daftar/form" element={<PendaftaranForm />} />
+          <Route path="/daftar/dokumen" element={<UploadDokumen />} />
         </Route>
 
         {/* ADMIN ROUTES */}
