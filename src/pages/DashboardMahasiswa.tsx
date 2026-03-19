@@ -18,7 +18,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 
-type RegistrationStatus = "DRAFT" | "SUBMITTED" | "SELEKSI" | "REVIEW" | "REVISI" | "MENUNGGU_PEMBAYARAN" | "DITERIMA";
+type RegistrationStatus = "DRAFT" | "SUBMITTED" | "SELEKSI" | "REVIEW" | "REVISI" | "MENUNGGU_PEMBAYARAN" | "VERIFIKASI_PEMBAYARAN" | "DITERIMA";
 
 export default function DashboardMahasiswa() {
   const navigate = useNavigate();
@@ -40,11 +40,9 @@ export default function DashboardMahasiswa() {
     (window as any).ubahData = setData;
   }, []);
 
-  // Ambil info jalur FROM local storage
   const savedJalur = localStorage.getItem("jalurPilihan") || "Reguler";
   const isKIP = savedJalur === "KIP";
 
-  // Timeline (KIP ATAU Reguler)
   const stepsReguler = [
     { id: "DRAFT", label: "Isi Formulir", icon: FileText },
     { id: "SUBMITTED", label: "Submit Berkas", icon: FileText },
@@ -72,7 +70,7 @@ export default function DashboardMahasiswa() {
       return;
     }
 
-    const validStatuses = ["DRAFT", "SUBMITTED", "SELEKSI", "REVIEW", "REVISI", "MENUNGGU_PEMBAYARAN", "DITERIMA"];
+    const validStatuses = ["DRAFT", "SUBMITTED", "SELEKSI", "REVIEW", "REVISI", "MENUNGGU_PEMBAYARAN", "VERIFIKASI_PEMBAYARAN", "DITERIMA"];
     let safeStatus = "DRAFT";
     
     if (savedStatus && validStatuses.includes(savedStatus)) {
@@ -81,7 +79,6 @@ export default function DashboardMahasiswa() {
       localStorage.setItem("statusPendaftaran", "DRAFT"); 
     }
 
-    // Trik buat ngakalin state Zustand yang ilang pas di-refresh
     let activeUser = user;
     if (!activeUser || !activeUser.email) {
       const storedUser = localStorage.getItem("temp-user-data");
@@ -89,7 +86,6 @@ export default function DashboardMahasiswa() {
         activeUser = JSON.parse(storedUser);
       }
     } else {
-      // Save ke local storage setiap kali ada user baru login biar aman pas direfresh
       localStorage.setItem("temp-user-data", JSON.stringify(user));
     }
 
@@ -119,7 +115,10 @@ export default function DashboardMahasiswa() {
   };
 
   const getStepStatus = (stepId: string) => {
-    const currentStatusId = data.status === "REVISI" ? "REVIEW" : data.status;
+    let currentStatusId = data.status;
+    if (data.status === "REVISI") currentStatusId = "REVIEW";
+    if (data.status === "VERIFIKASI_PEMBAYARAN") currentStatusId = "MENUNGGU_PEMBAYARAN";
+
     const currentStatusIdx = currentSteps.findIndex(s => s.id === currentStatusId);
     const stepIdx = currentSteps.findIndex(s => s.id === stepId);
 
@@ -128,7 +127,11 @@ export default function DashboardMahasiswa() {
     return "PENDING";
   };
 
-  let activeIdx = currentSteps.findIndex(s => s.id === (data.status === "REVISI" ? "REVIEW" : data.status));
+  let activeStatusId = data.status;
+  if (data.status === "REVISI") activeStatusId = "REVIEW";
+  if (data.status === "VERIFIKASI_PEMBAYARAN") activeStatusId = "MENUNGGU_PEMBAYARAN";
+
+  let activeIdx = currentSteps.findIndex(s => s.id === activeStatusId);
   if (activeIdx === -1) activeIdx = 0;
   const progressWidth = `${(activeIdx / (currentSteps.length - 1)) * 100}%`;
 
@@ -224,7 +227,6 @@ export default function DashboardMahasiswa() {
             </Card>
 
             <CardContent className="pt-8 pb-12 px-6 sm:px-12 overflow-x-auto scrollbar-hide">
-                {/* min-w diganti biar gak dempetan pas di mobile */}
                 <div className="relative flex justify-between min-w-[500px] w-full"> 
                   
                   <div className="absolute top-4 left-0 w-full h-[2px] bg-gray-100 z-0"></div>
@@ -246,7 +248,6 @@ export default function DashboardMahasiswa() {
                           {stepStatus === 'COMPLETED' ? <CheckCircle2 className="w-4 h-4" /> : <Icon className="w-3.5 h-3.5" />}
                         </div>
                         
-                        {/* BUG FIX TIMELINE: Tambah left-1/2 & -translate-x-1/2 biar teks lurus center di bawah buletan */}
                         <div className="absolute top-11 left-1/2 -translate-x-1/2 w-max text-center">
                           <span className={`text-[10px] sm:text-[11px] font-bold tracking-wide uppercase whitespace-nowrap
                             ${stepStatus === 'ACTIVE' ? 'text-amber-600' : 
@@ -272,7 +273,7 @@ export default function DashboardMahasiswa() {
                   ${data.status === 'DITERIMA' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
                     data.status === 'REVISI' ? 'bg-red-50 text-red-700 border-red-200' : 
                     'bg-amber-50 text-amber-700 border-amber-200'}`}>
-                  {data.status.replace("_", " ")}
+                  {data.status === "VERIFIKASI_PEMBAYARAN" ? "VERIFIKASI PEMBAYARAN" : data.status.replace("_", " ")}
                 </div>
 
                 {data.status === "REVISI" && (
@@ -296,6 +297,7 @@ export default function DashboardMahasiswa() {
                   {data.status === "REVIEW" && "Data sedang diverifikasi. Cek berkala halaman ini untuk update status."}
                   {data.status === "REVISI" && "Mohon perbaiki dokumen yang ditolak agar pendaftaran dapat diproses kembali."}
                   {data.status === "MENUNGGU_PEMBAYARAN" && "Selesaikan pembayaran biaya pendaftaran untuk mengamankan kursi Anda."}
+                  {data.status === "VERIFIKASI_PEMBAYARAN" && "Bukti pembayaran Anda berhasil diunggah dan sedang dicek oleh tim Keuangan."}
                   {data.status === "DITERIMA" && "Selamat bergabung! Silakan masuk komunitas Whatsapp resmi kampus STIMATA."}
                 </p>
                 
@@ -328,11 +330,22 @@ export default function DashboardMahasiswa() {
                     Perbaiki Dokumen <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 )}
+                
                 {data.status === "MENUNGGU_PEMBAYARAN" && (
-                  <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white shadow-sm transition-all">
+                  <Button onClick={() => navigate("/daftar/pembayaran")} className="w-full bg-amber-500 hover:bg-amber-600 text-white shadow-sm transition-all">
                     Bayar Sekarang <CreditCard className="w-4 h-4 ml-2" />
                   </Button>
                 )}
+                
+                {data.status === "VERIFIKASI_PEMBAYARAN" && (
+                  <Button 
+                    onClick={() => navigate("/daftar/pembayaran/status")} 
+                    variant="outline" 
+                    className="w-full border-amber-500 text-amber-600 hover:bg-amber-50 shadow-sm transition-all">
+                    <CheckCircle2 className="w-4 h-4 mr-2" /> Lihat Konfirmasi Pembayaran
+                  </Button>
+                )}
+                
                 {data.status === "DITERIMA" && (
                    <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white shadow-sm transition-all">
                     Join Komunitas Whatsapp <ChevronRight className="w-4 h-4 ml-1" />

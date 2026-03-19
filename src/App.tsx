@@ -14,7 +14,8 @@ import DaftarPilihJalur from "./pages/daftar/DaftarPilihJalur";
 import PendaftaranForm from "./pages/daftar/PendaftaranForm"; 
 import DashboardMahasiswa from "./pages/DashboardMahasiswa"; 
 import UploadDokumen from "./pages/daftar/UploadDokumen";
-
+import Pembayaran from "./pages/daftar/Pembayaran";
+import StatusPembayaran from "./pages/daftar/StatusPembayaran"; 
 
 import { useAuthStore } from "@/stores/authStore"; 
 import { ProtectedRoute, AdminRoute } from "@/components/routes/GuardRoutes"; 
@@ -57,6 +58,8 @@ function App() {
           <Route path="/daftar" element={<DaftarPilihJalur />} />
           <Route path="/daftar/form" element={<PendaftaranForm />} />
           <Route path="/daftar/dokumen" element={<UploadDokumen />} />
+          <Route path="/daftar/pembayaran" element={<Pembayaran />} />
+          <Route path="/daftar/pembayaran/status" element={<StatusPembayaran />} />
         </Route>
 
         {/* ADMIN ROUTES */}
