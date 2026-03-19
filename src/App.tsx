@@ -11,7 +11,7 @@ import ResetPassword from "./pages/ResetPassword";
 
 import LandingPage from "./pages/LandingPage";
 import DaftarPilihJalur from "./pages/daftar/DaftarPilihJalur"; 
-import PendaftaranForm from "./pages/PendaftaranForm"; 
+import PendaftaranForm from "./pages/daftar/PendaftaranForm"; 
 import DashboardMahasiswa from "./pages/DashboardMahasiswa"; 
 import UploadDokumen from "./pages/daftar/UploadDokumen";
 

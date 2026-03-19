@@ -16,6 +16,7 @@ const kelas = [
   { title: "S1 Teknik Informasi", desc: "Fokus pada AI, rekayasa perangkat lunak, dan jaringan cerdas.", icon: <Code className="w-10 h-10 text-amber-500" /> },
   { title: "S1 Sistem Informasi", desc: "Integrasi teknologi informasi dengan analistik manajemen bisnis modern.", icon: <Database className="w-10 h-10 text-amber-500" /> },
   { title: "D3 Sistem Informasi", desc: "Siap kerja dengan keahlian praktis di bidang pengembangan web dan game.", icon: <Laptop className="w-10 h-10 text-amber-500" /> },
+  { title: "Rekognisi Pembelajaran Lampau (RPL)", desc: "Program ini memungkinkan penyetaraan pengalaman kerja menjadi kredit semester (SKS) untuk mempercepat studi di perguruan tinggi.", icon: <GraduationCap className="w-10 h-10 text-amber-500" /> },
 ];
 
 const fasilitas = [
@@ -27,7 +28,7 @@ const fasilitas = [
 const alurPendaftaran = [
   { step: 1, title: "Daftar Akun", desc: "Buat akun menggunakan email aktif untuk masuk ke portal PMB STIMATA.", icon: <UserPlus className="w-8 h-8 text-amber-600" /> },
   { step: 2, title: "Pilih Jalur", desc: "Pilih jalur pendaftaran yang sesuai dengan Anda (Reguler atau KIP).", icon: <Milestone className="w-8 h-8 text-amber-600" /> },
-  { step: 3, title: "Isi Form Biodata", desc: "Lengkapi data diri, asal sekolah, dan pilih program studi (S1 Teknik Informasi, S1 Sistem Informasi, D3 Sistem Infomasi).", icon: <FileText className="w-8 h-8 text-amber-600" /> },
+  { step: 3, title: "Isi Form Biodata", desc: "Lengkapi data diri, asal sekolah, dan pilih program studi (S1 Teknik Informasi, S1 Sistem Informasi, D3 Sistem Infomasi, RPL).", icon: <FileText className="w-8 h-8 text-amber-600" /> },
   { step: 4, title: "Bayar Pendaftaran", desc: "Lakukan pembayaran biaya pendaftaran via transfer bank/e-wallet (Khusus untuk Jalur KIP hanya mengisi form, verivikasi berkas, dan seleksi).", icon: <CreditCard className="w-8 h-8 text-amber-600" /> },
   { step: 5, title: "Lengkapi Berkas", desc: "Unggah persyaratan seperti Pas Foto, Fotocopy KTP/KK, Fotocopy Ijazah/SKL dan berkas pendukung lainya (Sertifikat Kejuaraan/Organisasi).", icon: <FileCheck className="w-8 h-8 text-amber-600" /> },
   { step: 6, title: "Resmi Mahasiswa!", desc: "Selamat! Setelah diverifikasi, anda resmi menjadi mahasiswa kami.", icon: <GraduationCap className="w-8 h-8 text-amber-600" /> },
@@ -154,31 +155,51 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION KELAS */}
-      <section id="kelas" className="py-20 bg-slate-50 border-b border-slate-100">
+<section id="kelas" className="py-20 bg-slate-50 border-b border-slate-100">
+  <motion.div 
+    className="container mx-auto px-6"
+    initial="hidden" 
+    whileInView="visible" 
+    viewport={{ once: false, amount: 0.2 }} 
+    variants={staggerContainer}>
+    <motion.div variants={fadeInUp} className="text-center mb-12">
+      <h2 className="text-3xl font-bold text-slate-900">Program Studi Unggulan</h2>
+      <p className="text-slate-600 mt-2">Pilih kelas yang sesuai dengan passion teknologimu!</p>
+    </motion.div>
+    
+    {/* PENJELASAN UPDATE MAS : 
+       Desktop: Grid 4 kolom statis dengan stagger animation
+       Mobile: Flex scroll horizontal dengan stagger animation yang sama*/}
+    <div className="flex overflow-x-auto pt-4 pb-8 gap-6 snap-x no-scrollbar md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible">
+      {kelas.map((item, index) => (
         <motion.div 
-          className="container mx-auto px-6"
-          initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.2 }} variants={staggerContainer}
-        >
-          <motion.div variants={fadeInUp} className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-slate-900">Program Studi Unggulan</h2>
-            <p className="text-slate-600 mt-2">Pilih kelas yang sesuai dengan passion teknologimu!</p>
-          </motion.div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {kelas.map((item, index) => (
-              <motion.div key={index} variants={fadeInUp} whileHover={{ y: -10, transition: { duration: 0.2 } }}>
-                <Card className="hover:shadow-lg transition-shadow border-t-4 border-amber-500 h-full">
-                  <CardHeader>
-                    <div className="mb-4 bg-amber-50 w-16 h-16 rounded-2xl flex items-center justify-center">{item.icon}</div>
-                    <CardTitle className="text-xl">{item.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent><CardDescription className="text-base text-slate-700 leading-relaxed">{item.desc}</CardDescription></CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+          key={index} 
+          variants={fadeInUp}
+          whileHover={{ y: -10 }}
+          className="min-w-[280px] sm:min-w-[320px] md:min-w-full snap-center p-1" >
+          <Card className="hover:shadow-lg transition-shadow border-t-4 border-amber-500 h-full">
+            <CardHeader>
+              <div className="mb-4 bg-amber-50 w-16 h-16 rounded-2xl flex items-center justify-center">
+                {item.icon}
+              </div>
+              <CardTitle className="text-xl leading-tight">{item.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-base text-slate-700 leading-relaxed">
+                {item.desc}
+              </CardDescription>
+            </CardContent>
+          </Card>
         </motion.div>
-      </section>
+      ))}
+    </div>
+    <div className="flex justify-center gap-2 mt-4 md:hidden">
+      {kelas.map((_, i) => (
+        <div key={i} className="w-2 h-2 rounded-full bg-slate-300"></div>
+      ))}
+    </div>
+  </motion.div>
+</section>
 
       {/* SECTION FASILITAS */}
       <section id="fasilitas" className="py-20 bg-white">

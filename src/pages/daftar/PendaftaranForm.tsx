@@ -1,16 +1,24 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, ChevronLeft, ChevronRight, Save, ArrowLeft } from "lucide-react";
+import { CheckCircle2, ChevronLeft, ChevronRight, Save, ArrowLeft, ChevronDown, Search, X } from "lucide-react";
 
 const InputField = ({ label, name, type = "text", placeholder = "", value, onChange, error }: any) => (
   <div className="flex flex-col space-y-1.5 w-full">
     <label className="text-sm font-semibold text-slate-700">{label}</label>
     <input
-      type={type} name={name} value={value} onChange={onChange} placeholder={placeholder}
-      className={`flex h-10 w-full rounded-md border ${error ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all`}
+      type={type} 
+      name={name} 
+      value={value} 
+      onChange={onChange} 
+      placeholder={placeholder}
+      className={`flex h-10 w-full rounded-md border ${
+        error ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-300'
+      } bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all 
+      ${type === 'date' ? 'appearance-none min-h-[40px] block' : ''} 
+      ${type === 'number' ? '[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none' : ''}`}
     />
     {error && <span className="text-xs text-red-500">{error}</span>}
   </div>
@@ -21,14 +29,99 @@ const SelectField = ({ label, name, options, value, onChange, error }: any) => (
     <label className="text-sm font-semibold text-slate-700">{label}</label>
     <select
       name={name} value={value} onChange={onChange}
-      className={`flex h-10 w-full rounded-md border ${error ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
-    >
+      className={`flex h-10 w-full rounded-md border ${error ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}>
       <option value="" disabled>Pilih {label}</option>
       {options.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
     </select>
     {error && <span className="text-xs text-red-500">{error}</span>}
   </div>
 );
+
+const SearchableSelectField = ({ label, name, options, value, onChange, error, placeholder = "Pilih..." }: any) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredOptions = options
+    .filter((opt: string) => opt.toLowerCase().includes(search.toLowerCase()))
+    .slice(0, 1); 
+
+  const handleSelect = (selectedValue: string) => {
+    onChange({ target: { name, value: selectedValue } });
+    setIsOpen(false);
+    setSearch(""); 
+  };
+
+  return (
+    <div className="flex flex-col space-y-1.5 w-full" ref={wrapperRef}>
+      <label className="text-sm font-semibold text-slate-700">{label}</label>
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className={`flex h-10 w-full items-center justify-between rounded-md border ${error ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}>
+          <span className={value ? "text-slate-900 font-medium" : "text-slate-500"}>
+            {value || placeholder}
+          </span>
+          <ChevronDown className={`h-4 w-4 shrink-0 text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        </button>
+
+        {isOpen && (
+          <div className="absolute bottom-full left-0 mb-1 w-full rounded-md border border-slate-200 bg-white shadow-xl z-[99] overflow-hidden">
+            <div className="flex items-center border-b border-slate-100 px-3 py-2 bg-slate-50">
+              <Search className="h-4 w-4 text-slate-400 mr-2 shrink-0" />
+              <input
+                type="text"
+                autoFocus
+                className="w-full bg-transparent text-sm outline-none text-slate-700 placeholder:text-slate-400"
+                placeholder={`Cari ${label.toLowerCase()}...`}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}/>
+              {search && (
+                <button type="button" onClick={() => setSearch("")} className="text-slate-400 hover:text-slate-600">
+                <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+            
+            {search ? (
+              <ul className="max-h-48 overflow-y-auto py-1">
+                {filteredOptions.length === 0 ? (
+                  <li className="px-3 py-3 text-sm text-slate-500 text-center">Data tidak ditemukan</li>
+                ) : (
+                  filteredOptions.map((opt: string) => (
+                    <li
+                      key={opt}
+                      onClick={() => handleSelect(opt)}
+                      className={`flex cursor-pointer items-center justify-between px-3 py-2.5 text-sm transition-colors hover:bg-slate-100 ${value === opt ? 'bg-amber-50 text-amber-700 font-medium' : 'text-slate-700'}`}>
+                      {opt}
+                      {value === opt && <CheckCircle2 className="h-4 w-4 text-amber-600" />}
+                    </li>
+                  ))
+                )}
+              </ul>
+            ) : (
+              <div className="px-3 py-4 text-sm text-slate-400 text-center italic bg-white">
+                Ketik untuk mencari...
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      {error && <span className="text-xs text-red-500">{error}</span>}
+    </div>
+  );
+};
 
 export default function PendaftaranForm() {
   const navigate = useNavigate();
@@ -50,7 +143,7 @@ export default function PendaftaranForm() {
     namaAyah: "", pekerjaanAyah: "", namaIbu: "", pekerjaanIbu: "", penghasilanOrtu: ""
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> | { target: { name: string; value: string } }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (errors[e.target.name]) {
       setErrors({ ...errors, [e.target.name]: "" });
@@ -103,21 +196,18 @@ export default function PendaftaranForm() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-const handleSubmit = async () => {
-  setIsSubmitting(true);
-  try {
-    //  logic hit API
-    await new Promise(resolve => setTimeout(resolve, 2000)); // simulation, nunggu backend cuy
-
-    localStorage.setItem("statusPendaftaran", "SUBMITTED");
-    // Balik ke dashboard
-    navigate("/dashboard");
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000)); 
+      localStorage.setItem("statusPendaftaran", "SUBMITTED");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const steps = [
     { num: 1, title: "Data Pribadi" },
@@ -130,18 +220,17 @@ const handleSubmit = async () => {
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
         
-        {/* TOMBOL KEMBALI */}
         <Button 
-        variant="ghost" 
-        onClick={() => {
-        window.scrollTo(0, 0); 
-        navigate("/dashboard"); 
-      }} 
-        className="mb-6 text-slate-600 hover:text-amber-600 hover:bg-amber-50 px-0 sm:px-4">
-        <ArrowLeft className="w-4 h-4 mr-2" /> Kembali ke Dashboard
+          variant="ghost" 
+          onClick={() => {
+            window.scrollTo(0, 0); 
+            navigate("/dashboard"); 
+          }} 
+          className="mb-6 text-slate-600 hover:text-amber-600 hover:bg-amber-50 px-0 sm:px-4"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" /> Kembali ke Dashboard
         </Button>
 
-        {/* HEADER */}
         <div className="mb-12">
           <h1 className="text-3xl font-bold text-slate-900 text-center mb-10">Formulir Pendaftaran Mahasiswa Baru</h1>
           
@@ -168,14 +257,7 @@ const handleSubmit = async () => {
         </div>
 
         <Card className="shadow-xl border-t-4 border-t-amber-500 mt-8">
-          <CardHeader className="border-b bg-slate-50/50">
-            <CardTitle className="text-2xl text-slate-900">{steps[currentStep - 1].title}</CardTitle>
-            <CardDescription>
-              {currentStep === 4 ? "Pastikan semua data sudah benar sebelum disubmit." : "Lengkapi form di bawah ini dengan data yang valid."}
-            </CardDescription>
-          </CardHeader>
-          
-          <CardContent className="pt-6 overflow-hidden">
+          <CardContent className="pt-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
@@ -184,11 +266,10 @@ const handleSubmit = async () => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}>
                 
-                {/* BIODATA */}
                 {currentStep === 1 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <InputField label="Nama Lengkap (Sesuai Ijazah)" name="namaLengkap" value={formData.namaLengkap} onChange={handleChange} error={errors.namaLengkap} />
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-row gap-4 w-full">
                       <InputField label="Tempat Lahir" name="tempatLahir" value={formData.tempatLahir} onChange={handleChange} error={errors.tempatLahir} />
                       <InputField label="Tanggal Lahir" name="tanggalLahir" type="date" value={formData.tanggalLahir} onChange={handleChange} error={errors.tanggalLahir} />
                     </div>
@@ -211,17 +292,25 @@ const handleSubmit = async () => {
                   </div>
                 )}
 
-                {/* ASAL SEKOLAH */}
                 {currentStep === 2 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <InputField label="Asal Sekolah (SMA/SMK/MA)" name="asalSekolah" value={formData.asalSekolah} onChange={handleChange} error={errors.asalSekolah} />
                     <InputField label="Jurusan Sekolah" name="jurusanSekolah" value={formData.jurusanSekolah} onChange={handleChange} error={errors.jurusanSekolah} />
-                    <SelectField label="Tahun Lulus" name="tahunLulus" options={["2025", "2024", "2023", "2022", "2021", "2020", "Sebelum 2020"]} value={formData.tahunLulus} onChange={handleChange} error={errors.tahunLulus} />
-                    <SelectField label="Pilihan Program Studi" name="pilihanProdi" options={["S1 Teknik Informasi", "S1 Sistem Informasi", "D3 Sistem Informasi"]} value={formData.pilihanProdi} onChange={handleChange} error={errors.pilihanProdi} />
+                    
+                    <InputField label="Tahun Lulus" name="tahunLulus" type="number" placeholder="Contoh: 2024" value={formData.tahunLulus} onChange={handleChange} error={errors.tahunLulus} />
+                    
+                    <SearchableSelectField 
+                      label="Pilihan Program Studi" 
+                      name="pilihanProdi" 
+                      placeholder="Ketik nama prodi..."
+                      options={["S1 Teknik Informasi", "S1 Sistem Informasi", "D3 Sistem Informasi", "Rekognisi Pembelajaran Lampau"]} 
+                      value={formData.pilihanProdi} 
+                      onChange={handleChange} 
+                      error={errors.pilihanProdi} 
+                    />
                   </div>
                 )}
 
-                {/* ORANG TUA */}
                 {currentStep === 3 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
                     <div className="space-y-4 border-r md:pr-6 border-slate-100">
@@ -235,14 +324,19 @@ const handleSubmit = async () => {
                       <InputField label="Pekerjaan Ibu" name="pekerjaanIbu" value={formData.pekerjaanIbu} onChange={handleChange} error={errors.pekerjaanIbu} />
                     </div>
                     <div className="md:col-span-2 mt-4 pt-4 border-t border-slate-100">
-                      <SelectField label="Rata-rata Penghasilan Orang Tua / Bulan" name="penghasilanOrtu" options={[
-                        "< Rp 1.000.000", "Rp 1.000.000 - Rp 3.000.000", "Rp 3.000.000 - Rp 5.000.000", "> Rp 5.000.000",  "< Rp 10.000.000",  "< Rp 5.000.000"
-                      ]} value={formData.penghasilanOrtu} onChange={handleChange} error={errors.penghasilanOrtu} />
+                      <InputField 
+                        label="Rata-rata Penghasilan Orang Tua / Bulan (Rp)" 
+                        name="penghasilanOrtu" 
+                        type="number" 
+                        placeholder="Contoh: 5.000.000" 
+                        value={formData.penghasilanOrtu} 
+                        onChange={handleChange} 
+                        error={errors.penghasilanOrtu} 
+                      />
                     </div>
                   </div>
                 )}
 
-                {/* STEP 4 */}
                 {currentStep === 4 && (
                   <div className="space-y-6">
                     <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-lg flex items-start gap-3">
@@ -276,7 +370,7 @@ const handleSubmit = async () => {
                           <h3 className="font-bold text-lg text-slate-800 border-b pb-2">Data Orang Tua</h3>
                           <div className="grid grid-cols-3 gap-2"><span className="text-slate-500">Ayah</span><span className="col-span-2 font-medium">: {formData.namaAyah} ({formData.pekerjaanAyah})</span></div>
                           <div className="grid grid-cols-3 gap-2"><span className="text-slate-500">Ibu</span><span className="col-span-2 font-medium">: {formData.namaIbu} ({formData.pekerjaanIbu})</span></div>
-                          <div className="grid grid-cols-3 gap-2"><span className="text-slate-500">Penghasilan</span><span className="col-span-2 font-medium">: {formData.penghasilanOrtu}</span></div>
+                          <div className="grid grid-cols-3 gap-2"><span className="text-slate-500">Penghasilan</span><span className="col-span-2 font-medium">: Rp {formData.penghasilanOrtu}</span></div>
                         </div>
                       </div>
                     </div>
@@ -286,8 +380,7 @@ const handleSubmit = async () => {
               </motion.div>
             </AnimatePresence>
 
-            {/* BUTTON NAVIGATION */}
-            <div className="flex justify-between items-center mt-10 pt-6 border-t border-slate-100">
+            <div className="flex justify-between items-center mt-10 pt-6 border-t border-slate-100 relative z-0">
               <Button 
                 variant="outline" 
                 onClick={prevStep} 
