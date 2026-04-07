@@ -8,6 +8,7 @@ import SignUp from "./pages/SignUp";
 import VerifyEmail from "./pages/VerifyEmail"; 
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 import LandingPage from "./pages/LandingPage";
 import DaftarPilihJalur from "./pages/daftar/DaftarPilihJalur"; 
@@ -21,16 +22,16 @@ import { useAuthStore } from "@/stores/authStore";
 import { ProtectedRoute, AdminRoute } from "@/components/routes/GuardRoutes"; 
 
 // --- dummy admin  ---
-function AdminPanelDummy() {
-  const { logout } = useAuthStore();
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-6 bg-purple-50 p-6">
-      <h1 className="text-3xl font-bold text-purple-800">👮‍♂️ Halo Bapak Admin</h1>
-      <p>Ini halaman khusus admin, mahasiswa nggak bisa masuk sini.</p>
-      <Button onClick={() => logout()} variant="destructive">Logout Admin</Button>
-    </div>
-  );
-}
+// function AdminPanelDummy() {
+// const { logout } = useAuthStore();
+//  return (
+//    <div className="flex flex-col items-center justify-center min-h-screen gap-6 bg-purple-50 p-6">
+//      <h1 className="text-3xl font-bold text-purple-800">👮‍♂️ Halo Bapak Admin</h1>
+//      <p>Ini halaman khusus admin, mahasiswa nggak bisa masuk sini.</p>
+//      <Button onClick={() => logout()} variant="destructive">Logout Admin</Button>
+//    </div>
+//  );
+// }
 
 // --- MAIN APP COMPONENT ---
 function App() {
@@ -64,8 +65,8 @@ function App() {
 
         {/* ADMIN ROUTES */}
         <Route element={<AdminRoute />}>
-          <Route path="/admin" element={<AdminPanelDummy />} />
-        </Route>
+          <Route path="/admin" element={<AdminDashboard />} />
+       </Route>
       </Routes>
     </Router>
   );
