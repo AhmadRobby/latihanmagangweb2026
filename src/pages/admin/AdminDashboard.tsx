@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
   Users, 
@@ -12,7 +12,9 @@ import {
   ArrowRight, 
   Activity,
   LogOut,
-  Clock
+  Clock,
+  List,
+  ClipboardCheck 
 } from "lucide-react";
 
 // Tipe data untuk statistik
@@ -22,6 +24,7 @@ interface AdminStats {
   kip: number;
   menungguVerifikasi: number;
   menungguPembayaran: number;
+  menungguSeleksiKip: number; 
   grafikPendaftar: { tanggal: string; jumlah: number }[];
 }
 
@@ -36,16 +39,15 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       setIsLoading(true);
       try {
-        // Anggap ini adalah axios.get('/admin/stats')
-        await new Promise(resolve => setTimeout(resolve, 800)); // Delay simulasi jaringan
+        await new Promise(resolve => setTimeout(resolve, 800)); 
         
-        // Data balikan dari server
         const mockData: AdminStats = {
           totalPendaftar: 248,
           reguler: 184,
           kip: 64,
           menungguVerifikasi: 12,
           menungguPembayaran: 8,
+          menungguSeleksiKip: 15, 
           grafikPendaftar: [
             { tanggal: "18 Mei", jumlah: 12 },
             { tanggal: "19 Mei", jumlah: 25 },
@@ -80,7 +82,6 @@ export default function AdminDashboard() {
     );
   }
 
-  // Mencari nilai tertinggi untuk skala grafik Tailwind
   const maxPendaftar = Math.max(...stats.grafikPendaftar.map(d => d.jumlah));
 
   return (
@@ -105,9 +106,18 @@ export default function AdminDashboard() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
         
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800">Overview Pendaftaran</h2>
-          <p className="text-slate-500 mt-1">Pantau statistik penerimaan mahasiswa baru hari ini.</p>
+        {/* BAGIAN JUDUL & TOMBOL KE DATA PENDAFTAR */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-800">Overview Pendaftaran</h2>
+            <p className="text-slate-500 mt-1">Pantau statistik penerimaan mahasiswa baru hari ini.</p>
+          </div>
+          <Button 
+            onClick={() => navigate('/admin/pendaftar')}
+            className="bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-2"
+          >
+            <List className="w-4 h-4" /> Lihat Semua Pendaftar
+          </Button>
         </div>
 
         {/* STATISTIK UTAMA (CARDS) */}
@@ -161,14 +171,16 @@ export default function AdminDashboard() {
                 {stats.grafikPendaftar.map((item, index) => {
                   const heightPercent = (item.jumlah / maxPendaftar) * 100;
                   return (
-                    <div key={index} className="flex flex-col items-center flex-1 group relative">
+                    <div key={index} className="flex flex-col items-center flex-1 h-full justify-end group relative">
+                      
                       {/* Tooltip Hover */}
                       <div className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-slate-800 text-white text-xs px-2 py-1 rounded transition-opacity whitespace-nowrap z-10 pointer-events-none">
                         {item.jumlah} Pendaftar
                       </div>
                       
-                      {/* Bar Grafik */}
-                      <div className="w-full max-w-[40px] bg-amber-100 group-hover:bg-amber-200 rounded-t-md relative flex items-end justify-center transition-colors">
+                      <div className="w-full h-full max-w-[40px] bg-amber-100 group-hover:bg-amber-200 rounded-t-md relative flex items-end justify-center transition-colors">
+                        
+                        {/* Bar Utama */}
                         <div 
                           className="w-full bg-amber-500 group-hover:bg-amber-600 rounded-t-md transition-all duration-700 ease-out" 
                           style={{ height: `${heightPercent}%` }}>
@@ -186,7 +198,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          {/* SHORTCUTS / BUTUH PERHATIAN (KANAN) */}
+          {/* SHORTCUTS */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-slate-800 flex items-center">
               <Clock className="w-5 h-5 mr-2 text-amber-500" /> Butuh Tindakan
@@ -237,8 +249,31 @@ export default function AdminDashboard() {
                 </Button>
               </CardContent>
             </Card>
-          </div>
 
+            {/* Shortcut Kelola Seleksi KIP */}
+            <Card className="border-l-4 border-l-amber-500 shadow-sm hover:shadow-md transition-shadow">
+              <CardContent className="p-5">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-amber-50 text-amber-600 rounded-md">
+                      <ClipboardCheck className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-slate-800 font-semibold">{stats.menungguSeleksiKip} Pendaftar</p>
+                      <p className="text-sm text-slate-500">Perlu seleksi KIP</p>
+                    </div>
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => navigate('/admin/seleksi')} 
+                  variant="outline" 
+                  className="w-full mt-4 text-amber-700 border-amber-200 hover:bg-amber-50">
+                  Kelola Seleksi KIP <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </CardContent>
+            </Card>
+
+          </div>
         </div>
       </main>
     </div>

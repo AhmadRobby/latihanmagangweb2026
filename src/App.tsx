@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 
 
 import Login from "./pages/Login"; 
@@ -9,6 +8,9 @@ import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminPendaftar from "./pages/admin/AdminPendaftar";
+import AdminDetailPendaftar from "./pages/admin/AdminDetailPendaftar";
+import AdminSeleksi from "./pages/admin/AdminSeleksi";
 
 import LandingPage from "./pages/LandingPage";
 import DaftarPilihJalur from "./pages/daftar/DaftarPilihJalur"; 
@@ -64,11 +66,15 @@ function App() {
         </Route>
 
         {/* ADMIN ROUTES */}
+      {/* ADMIN ROUTES */}
         <Route element={<AdminRoute />}>
           <Route path="/admin" element={<AdminDashboard />} />
-       </Route>
-      </Routes>
-    </Router>
+          <Route path="/admin/pendaftar" element={<AdminPendaftar />} />
+          <Route path="/admin/pendaftar/:id" element={<AdminDetailPendaftar />} />
+          <Route path="/admin/seleksi" element={<AdminSeleksi />} />
+        </Route>
+</Routes>
+</Router>
   );
 }
 
