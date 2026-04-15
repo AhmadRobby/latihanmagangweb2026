@@ -58,7 +58,7 @@ const MOCK_APPLICANT = {
     jumlah: "Rp 2.500.000",
     tanggal: "19 Mei 2025",
     metode: "Transfer Bank BCA",
-    fileUrl: "#",
+    fileUrl: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=800", // Diperbarui dengan link Unsplash
   },
   dataKip: {
     nomorKip: "KIP-2025-987654321",
@@ -123,6 +123,15 @@ export default function AdminDetailPendaftar() {
     setIsRejectModalOpen(false);
     setRejectReason("");
     // Panggil API PATCH /admin/pendaftar/:id/tolak
+  };
+
+  // Handler untuk Preview Bukti Transfer
+  const handlePreviewBukti = (url: string) => {
+    if (url && url !== "#") {
+      window.open(url, "_blank", "noopener,noreferrer");
+    } else {
+      alert("Bukti transfer tidak tersedia.");
+    }
   };
 
   return (
@@ -202,7 +211,7 @@ export default function AdminDetailPendaftar() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
-                  <div><p className="text-sm text-slate-500">Asal Sekolah</p><p className="font-medium">{applicant.dataPendidikan.asalSekolah}</p></div>
+                  <div><p className="text-sm text-slate-500">As Sekolah</p><p className="font-medium">{applicant.dataPendidikan.asalSekolah}</p></div>
                   <div><p className="text-sm text-slate-500">Jurusan</p><p className="font-medium">{applicant.dataPendidikan.jurusan}</p></div>
                   <div><p className="text-sm text-slate-500">Tahun Lulus</p><p className="font-medium">{applicant.dataPendidikan.tahunLulus}</p></div>
                   <div><p className="text-sm text-slate-500">Nilai Rata-rata Rapor</p><p className="font-medium">{applicant.dataPendidikan.nilaiRataRata}</p></div>
@@ -240,7 +249,11 @@ export default function AdminDetailPendaftar() {
                     <div><p className="text-sm text-slate-500">Metode</p><p className="font-medium">{applicant.pembayaran.metode}</p></div>
                     <div><p className="text-sm text-slate-500">Tanggal Bayar</p><p className="font-medium">{applicant.pembayaran.tanggal}</p></div>
                   </div>
-                  <Button variant="outline" className="text-amber-600 border-amber-200 hover:bg-amber-50">
+                  <Button 
+                    variant="outline" 
+                    className="text-amber-600 border-amber-200 hover:bg-amber-50"
+                    onClick={() => handlePreviewBukti(applicant.pembayaran.fileUrl)}
+                  >
                     <Eye className="w-4 h-4 mr-2" /> Lihat Bukti Transfer
                   </Button>
                 </CardContent>

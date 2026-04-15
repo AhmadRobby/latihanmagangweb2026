@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-
 import Login from "./pages/Login"; 
 import SignUp from "./pages/SignUp"; 
 import VerifyEmail from "./pages/VerifyEmail"; 
@@ -11,6 +10,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminPendaftar from "./pages/admin/AdminPendaftar";
 import AdminDetailPendaftar from "./pages/admin/AdminDetailPendaftar";
 import AdminSeleksi from "./pages/admin/AdminSeleksi";
+import AdminPembayaran from "./pages/admin/AdminPembayaran"; 
 
 import LandingPage from "./pages/LandingPage";
 import DaftarPilihJalur from "./pages/daftar/DaftarPilihJalur"; 
@@ -22,18 +22,6 @@ import StatusPembayaran from "./pages/daftar/StatusPembayaran";
 
 import { useAuthStore } from "@/stores/authStore"; 
 import { ProtectedRoute, AdminRoute } from "@/components/routes/GuardRoutes"; 
-
-// --- dummy admin  ---
-// function AdminPanelDummy() {
-// const { logout } = useAuthStore();
-//  return (
-//    <div className="flex flex-col items-center justify-center min-h-screen gap-6 bg-purple-50 p-6">
-//      <h1 className="text-3xl font-bold text-purple-800">👮‍♂️ Halo Bapak Admin</h1>
-//      <p>Ini halaman khusus admin, mahasiswa nggak bisa masuk sini.</p>
-//      <Button onClick={() => logout()} variant="destructive">Logout Admin</Button>
-//    </div>
-//  );
-// }
 
 // --- MAIN APP COMPONENT ---
 function App() {
@@ -66,15 +54,15 @@ function App() {
         </Route>
 
         {/* ADMIN ROUTES */}
-      {/* ADMIN ROUTES */}
         <Route element={<AdminRoute />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/pendaftar" element={<AdminPendaftar />} />
           <Route path="/admin/pendaftar/:id" element={<AdminDetailPendaftar />} />
           <Route path="/admin/seleksi" element={<AdminSeleksi />} />
+          <Route path="/admin/pembayaran" element={<AdminPembayaran />} />
         </Route>
-</Routes>
-</Router>
+      </Routes>
+    </Router>
   );
 }
 

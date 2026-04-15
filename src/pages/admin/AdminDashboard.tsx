@@ -242,7 +242,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <Button 
-                  onClick={() => alert("Navigasi ke halaman Konfirmasi Pembayaran")} 
+                  onClick={() => navigate('/admin/pembayaran')} 
                   variant="outline" 
                   className="w-full mt-4 text-orange-700 border-orange-200 hover:bg-orange-50">
                   Cek Pembayaran <ArrowRight className="w-4 h-4 ml-2" />
