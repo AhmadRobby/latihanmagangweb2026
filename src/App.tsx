@@ -19,6 +19,7 @@ import DashboardMahasiswa from "./pages/DashboardMahasiswa";
 import UploadDokumen from "./pages/daftar/UploadDokumen";
 import Pembayaran from "./pages/daftar/Pembayaran";
 import StatusPembayaran from "./pages/daftar/StatusPembayaran"; 
+import PengumumanKip from "./pages/daftar/PengumumanKip";
 
 import { useAuthStore } from "@/stores/authStore"; 
 import { ProtectedRoute, AdminRoute } from "@/components/routes/GuardRoutes"; 
@@ -51,6 +52,7 @@ function App() {
           <Route path="/daftar/dokumen" element={<UploadDokumen />} />
           <Route path="/daftar/pembayaran" element={<Pembayaran />} />
           <Route path="/daftar/pembayaran/status" element={<StatusPembayaran />} />
+          <Route path="/pengumuman" element={<PengumumanKip />} />
         </Route>
 
         {/* ADMIN ROUTES */}

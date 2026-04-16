@@ -17,6 +17,8 @@ import {
   ClipboardList,
   ArrowLeft
 } from "lucide-react";
+// IMPORT NOTIFICATION BELL DI SINI
+import NotificationBell from "@/components/NotificationBell";
 
 type RegistrationStatus = "DRAFT" | "SUBMITTED" | "SELEKSI" | "REVIEW" | "REVISI" | "MENUNGGU_PEMBAYARAN" | "VERIFIKASI_PEMBAYARAN" | "DITERIMA";
 
@@ -95,7 +97,7 @@ export default function DashboardMahasiswa() {
       ...prev,
       name: activeUser?.name || "Calon Mahasiswa", 
       personalEmail: activeUser?.email || "email@domain.com",
-      regNumber: isZaky ? "PMB-2026-08999" : "PMB-2026-08912",
+      regNumber: isZaky ? "PMB25002" : "PMB25001",
       nim: isZaky ? "2610114003" : "2610114001",
       campusEmail: isZaky ? "zaky_2610114003@stimata.ac.id" : "robby_2610114001@stimata.ac.id",
       track: `Jalur ${storedJalur} Gelombang 1`,
@@ -153,12 +155,18 @@ export default function DashboardMahasiswa() {
             </div>
             <h1 className="text-lg font-bold text-slate-900 tracking-tight">Status Anda</h1>
           </div>
-          <Button 
-            onClick={handleLogout} 
-            variant="ghost" 
-            className="text-slate-500 hover:text-red-600 hover:bg-red-50 font-medium px-3 h-9 transition-colors">
-            <LogOut className="w-4 h-4 mr-2" /> Logout
-          </Button>
+          
+          {/* NAVBAR NOTIFICATION BELL */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            <NotificationBell />
+            <Button 
+              onClick={handleLogout} 
+              variant="ghost" 
+              className="text-slate-500 hover:text-red-600 hover:bg-red-50 font-medium px-3 h-9 transition-colors">
+              <LogOut className="w-4 h-4 mr-2 hidden sm:block" /> Logout
+            </Button>
+          </div>
+          
         </div>
       </header>
 
@@ -293,7 +301,7 @@ export default function DashboardMahasiswa() {
                 <p className="text-sm text-slate-600 mb-5 leading-relaxed">
                   {data.status === "DRAFT" && "Formulir biodata Anda belum lengkap. Selesaikan untuk lanjut ke tahap pemberkasan."}
                   {data.status === "SUBMITTED" && "Segera unggah dokumen persyaratan agar bisa diverifikasi oleh admin."}
-                  {data.status === "SELEKSI" && "Anda sedang dalam tahap seleksi (Verifikasi Berkas, Tes Tulis, & Wawancara). Pantau terus jadwal dari admin."}
+                  {data.status === "SELEKSI" && "Anda sedang dalam tahap seleksi (Verifikasi Berkas, Tes Tulis, & Wawancara). Silakan cek halaman pengumuman untuk melihat jadwal dan hasilnya."}
                   {data.status === "REVIEW" && "Data sedang diverifikasi. Cek berkala halaman ini untuk update status."}
                   {data.status === "REVISI" && "Mohon perbaiki dokumen yang ditolak agar pendaftaran dapat diproses kembali."}
                   {data.status === "MENUNGGU_PEMBAYARAN" && "Selesaikan pembayaran biaya pendaftaran untuk mengamankan kursi Anda."}
@@ -315,8 +323,10 @@ export default function DashboardMahasiswa() {
                   </Button>
                 )}
                 {data.status === "SELEKSI" && (
-                  <Button variant="outline" className="w-full border-amber-200 text-amber-700 bg-amber-50 cursor-default">
-                    <ClipboardList className="w-4 h-4 mr-2" /> Menunggu Hasil Seleksi
+                  <Button 
+                    onClick={() => navigate("/pengumuman")}
+                    className="w-full bg-amber-500 hover:bg-amber-600 text-white shadow-sm transition-all">
+                    Cek Pengumuman Seleksi <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 )}
                 {data.status === "REVIEW" && (

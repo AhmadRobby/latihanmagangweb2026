@@ -24,7 +24,7 @@ const MOCK_APPLICANT = {
   nama: "Ahmad Robby Bagus F",
     // UBAH JALUR DI BAWAH INI MENJADI "KIP Kuliah" UNTUK MELIHAT TAMPILAN KIP
   jalur: "Reguler", 
-  status: "MENUNGGU_VERIFIKASI_KIP", // Ubah jadi "LOLOS_KIP" untuk tes tombol Generate NIM
+  status: "MENUNGGU_VERIFIKASI", // Ubah jadi "LOLOS_KIP" untuk tes tombol Generate NIM
   tanggalDaftar: "18 Mei 2024",
   dataPribadi: {
     nik: "3507123456780001",
