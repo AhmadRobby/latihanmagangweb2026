@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTitle } from "@/hooks/useTitle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion, Variants } from "framer-motion";
@@ -9,7 +10,7 @@ import {
   UserPlus, Milestone, FileText, 
   CreditCard, FileCheck, GraduationCap
 } from "lucide-react";
-import Navbar from "@/pages/Navbar"; 
+import Navbar from "@/pages/Navbar";
 
 // DATA DUMMY ROBBY //
 const kelas = [
@@ -52,6 +53,7 @@ const staggerContainer: Variants = {
 };
 
 export default function LandingPage() {
+  useTitle("Beranda");
   return (
     <div className="min-h-screen bg-white font-sans overflow-x-hidden">
       

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,6 +58,7 @@ const signUpSchema = z.object({
 type SignUpForm = z.infer<typeof signUpSchema>;
 
 export default function SignUp() {
+useTitle("Halaman Daftar");  
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState("");

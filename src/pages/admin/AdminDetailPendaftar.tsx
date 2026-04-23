@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -73,6 +74,7 @@ const MOCK_APPLICANT = {
 };
 
 export default function AdminDetailPendaftar() {
+  useTitle("Halaman Detail Pendaftar");
   const { id } = useParams();
   const navigate = useNavigate();
   const [applicant, setApplicant] = useState<any>(null);

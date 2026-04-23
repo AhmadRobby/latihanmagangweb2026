@@ -17,12 +17,13 @@ import {
   ClipboardList,
   ArrowLeft
 } from "lucide-react";
-// IMPORT NOTIFICATION BELL DI SINI
+import { useTitle } from "@/hooks/useTitle";
 import NotificationBell from "@/components/NotificationBell";
 
 type RegistrationStatus = "DRAFT" | "SUBMITTED" | "SELEKSI" | "REVIEW" | "REVISI" | "MENUNGGU_PEMBAYARAN" | "VERIFIKASI_PEMBAYARAN" | "DITERIMA";
 
 export default function DashboardMahasiswa() {
+useTitle("Halaman Calon Mahasiswa"); 
   const navigate = useNavigate();
   const { user, logout } = useAuthStore(); 
   const [isLoading, setIsLoading] = useState(true);

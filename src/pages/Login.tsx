@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useAuthStore } from '@/stores/authStore';
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -10,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+
+
 
 const AuroraBackground = () => {
   return (
@@ -52,6 +55,7 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 export default function Login() {
+  useTitle("Halaman Login");
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
@@ -136,7 +140,7 @@ export default function Login() {
         <CardContent>
           {successMessage && (
             <div className="mb-4 p-3 bg-emerald-50 text-emerald-700 text-sm rounded-lg text-center font-medium border border-emerald-200">
-              ✅ {successMessage}
+           {successMessage}
             </div>
           )}
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { GraduationCap, Wallet, ArrowRight, Loader2, LogOut } from "lucide-react
 import { useAuthStore } from "@/stores/authStore"
 
 export default function DaftarPilihJalur() {
+  useTitle("Pilih Jalur Pendaftaran");
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const { logout } = useAuthStore(); 

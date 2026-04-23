@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -51,6 +52,7 @@ const INITIAL_DATA: Pembayaran[] = [
 ];
 
 export default function AdminPembayaran() {
+  useTitle("Halaman Manajemen Pembayaran");
   const navigate = useNavigate();
   const [pembayaranList, setPembayaranList] = useState<Pembayaran[]>(INITIAL_DATA);
   

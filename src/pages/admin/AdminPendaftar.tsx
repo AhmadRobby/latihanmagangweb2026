@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,7 +40,7 @@ const MOCK_DATA: Pendaftar[] = [
 
 export default function AdminPendaftar() {
   const navigate = useNavigate();
-  
+  useTitle("Halaman Data Pendaftar");
   // States untuk Filter & Search
   const [searchQuery, setSearchQuery] = useState("");
   const [filterJalur, setFilterJalur] = useState("Semua");

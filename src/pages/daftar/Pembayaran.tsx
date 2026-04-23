@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Upload, CheckCircle2, AlertCircle, CreditCard, ArrowLeft, Loader2, Copy } from "lucide-react";
 
 export default function Pembayaran() {
+  useTitle("Halaman Pembayaran");
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);

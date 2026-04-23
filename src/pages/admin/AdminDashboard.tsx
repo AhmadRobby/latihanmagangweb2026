@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,6 +30,7 @@ interface AdminStats {
 }
 
 export default function AdminDashboard() {
+  useTitle("Halaman Admin");
   const navigate = useNavigate();
   const { logout } = useAuthStore();
   const [stats, setStats] = useState<AdminStats | null>(null);

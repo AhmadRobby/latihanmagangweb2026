@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,8 +9,8 @@ type PaymentStatus = "MENUNGGU" | "DITERIMA" | "DITOLAK";
 
 export default function StatusPembayaran() {
   const navigate = useNavigate();
-  
-  // 💡 TIP: Ubah initial state ini untuk mengetes UI ("MENUNGGU" | "DITERIMA" | "DITOLAK")
+  useTitle("Halaman Status Pembayaran");
+  // Ubah initial state ini untuk mengetes UI ("MENUNGGU" | "DITERIMA" | "DITOLAK")
   const [status, setStatus] = useState<PaymentStatus>("DITERIMA"); 
   const [showPreview, setShowPreview] = useState(false);
 

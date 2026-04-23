@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -124,6 +125,7 @@ const SearchableSelectField = ({ label, name, options, value, onChange, error, p
 };
 
 export default function PendaftaranForm() {
+  useTitle("Formulir Pendaftaran");
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);

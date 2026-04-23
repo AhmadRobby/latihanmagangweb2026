@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom"; 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -57,7 +58,7 @@ const INITIAL_DATA = [
 export default function AdminSeleksi() {
   const navigate = useNavigate(); // <-- Inisialisasi navigasi
   const [peserta, setPeserta] = useState<Peserta[]>(INITIAL_DATA);
-  
+  useTitle("Halaman Manajemen Seleksi");
   // State Modal Jadwal
   const [isJadwalModalOpen, setIsJadwalModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState("");

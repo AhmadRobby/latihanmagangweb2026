@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ type StatusPengumuman = "MENUNGGU" | "LOLOS" | "TIDAK_LOLOS";
 
 export default function PengumumanKip() {
   const navigate = useNavigate();
-  
+  useTitle("Pengumuman KIPK");
   // STATE SIMULASI: Ubah default state di sini atau gunakan tombol simulator di UI
   const [status, setStatus] = useState<StatusPengumuman>("MENUNGGU");
   

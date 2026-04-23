@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,6 +51,7 @@ const otpSchema = z.object({
 type OtpForm = z.infer<typeof otpSchema>;
 
 export default function VerifyEmail() {
+  useTitle("Verifikasi Email");
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);

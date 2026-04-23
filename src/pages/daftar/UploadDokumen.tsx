@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
 import { 
   CheckCircle2, 
@@ -27,6 +28,7 @@ interface DocumentItem {
 }
 
 export default function UploadDokumen() {
+  useTitle("Halaman Upload Dokumen");
   const navigate = useNavigate();
   const [jalur, setJalur] = useState("Reguler");
   const [errorMsg, setErrorMsg] = useState("");

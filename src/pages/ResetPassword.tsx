@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,6 +56,7 @@ path: ["confirmPassword"],
 type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPassword() {
+  useTitle("Reset Password");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
