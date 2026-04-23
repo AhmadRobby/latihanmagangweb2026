@@ -8,9 +8,15 @@ import {
   Wifi, MonitorPlay, BookOpen, 
   Trophy, Medal, Star,
   UserPlus, Milestone, FileText, 
-  CreditCard, FileCheck, GraduationCap
+  CreditCard, FileCheck, GraduationCap, MessageCircle, MessageSquare
 } from "lucide-react";
 import Navbar from "@/pages/Navbar";
+
+// Data Dummy Testi
+const testimoni = [
+  { nama: "Akbar Atma", role: "Alumni S1 Teknik Informasi (Software Engineer di Tokopedia)", text: "Kurikulum STIMATA bener-bener relate sama kebutuhan industri. Lulus langsung dapet kerja!" },
+  { nama: "Maftuh Al-Haq", role: "Mahasiswa D3 Sistem Informasi", text: "Fasilitas lab-nya lengkap banget, dosennya juga asik dan gampang diajak diskusi soal project luar." },
+];
 
 // DATA DUMMY ROBBY //
 const kelas = [
@@ -111,6 +117,7 @@ export default function LandingPage() {
                 title="STIMATA Campus Tour"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
+                loading="lazy" // cek ga lemot pas jaringan lambat
               />
             </div>
           </div>
@@ -157,7 +164,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION KELAS */}
-<section id="kelas" className="py-20 bg-slate-50 border-b border-slate-100">
+  <section id="kelas" className="py-20 bg-slate-50 border-b border-slate-100">
   <motion.div 
     className="container mx-auto px-6"
     initial="hidden" 
@@ -220,6 +227,27 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
+      {/* SECTION TESTIMONI */}
+<section className="py-20 bg-amber-50">
+  <motion.div 
+    className="container mx-auto px-6 text-center"
+    initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.2 }} variants={staggerContainer}>
+    <motion.h2 variants={fadeInUp} className="text-3xl font-bold text-slate-900 mb-12">Apa Kata Alumni Kita?</motion.h2>
+    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      {testimoni.map((testi, index) => (
+        <motion.div key={index} variants={fadeInUp} className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 relative text-left">
+          <MessageSquare className="w-10 h-10 text-amber-200 absolute top-6 right-6 opacity-50" />
+          <p className="text-slate-600 italic mb-6 relative z-10">"{testi.text}"</p>
+          <div>
+            <h4 className="font-bold text-slate-900">{testi.nama}</h4>
+            <p className="text-sm text-amber-600">{testi.role}</p>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  </motion.div>
+</section>
+
       {/* SECTION PRESTASI */}
       <section id="prestasi" className="py-20 bg-slate-900 text-white">
         <motion.div 
@@ -262,21 +290,92 @@ export default function LandingPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-slate-950 text-slate-400 py-12 text-center flex flex-col items-center">
-        <div className="container mx-auto px-6 flex flex-col items-center justify-center space-y-4">
-          <h3 className="text-xl font-bold text-white tracking-wide">
-            STIMIK PRADNYA PARAMITA
-          </h3>
-          <p className="max-w-sm md:max-w-md mx-auto text-sm md:text-base leading-relaxed px-4">
-            Jl. Laksda Adi Sucipto No.249a, Kota Malang, Jawa Timur
-          </p>
+  <footer className="bg-slate-950 text-slate-400 py-12">
+  <div className="container mx-auto px-6 grid md:grid-cols-3 gap-8 mb-8 text-center md:text-left">
+    <div>
+      <h3 className="text-xl font-bold text-white tracking-wide mb-4">STMIK PRADNYA PARAMITA</h3>
+      <p className="text-sm leading-relaxed mb-4">Jl. Laksda Adi Sucipto No.249a, Kota Malang, Jawa Timur</p>
+      <p className="text-sm">Email: info@stimata.ac.id<br/>Telp: (0341) 123456</p>
+    </div>
+    <div className="flex flex-col space-y-2">
+      <h4 className="text-white font-semibold mb-2">Tautan Cepat</h4>
+      <Link to="/login" className="hover:text-amber-500 transition-colors">Login Pendaftar</Link>
+      <Link to="/signup" className="hover:text-amber-500 transition-colors">Daftar Sekarang</Link>
+      <a href="#kelas" className="hover:text-amber-500 transition-colors">Program Studi</a>
+    </div>
+    <div className="flex flex-col space-y-4 md:items-end">
+      <h4 className="text-white font-semibold text-center md:text-right">Sosial Media</h4>
       
-          <div className="w-16 h-px bg-slate-800 my-4"></div> 
-          
-          <p className="text-sm text-slate-600">
-            &copy; 2026 PMB STIMATA. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      {/* Icon Sosmed */}
+      <div className="flex gap-4 items-center justify-center md:justify-end">
+        {/* Facebook */}
+        <a  href="https://facebook.com/kampusstimata" 
+          target="_blank" 
+          rel="noreferrer" 
+          className="bg-slate-800 p-2.5 rounded-full text-slate-400 hover:bg-[#1877F2] hover:text-white transition-all hover:-translate-y-1">
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            className="w-5 h-5">
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+          </svg>
+        </a>
+
+        {/* YouTube */}
+        <a href="https://youtube.com/@kampusstimata" 
+          target="_blank" 
+          rel="noreferrer" 
+          className="bg-slate-800 p-2.5 rounded-full text-slate-400 hover:bg-[#FF0000] hover:text-white transition-all hover:-translate-y-1">
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            className="w-5 h-5">
+            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+            <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+          </svg>
+        </a>
+
+        {/* TikTok */}
+        <a href="https://tiktok.com/@kampusstimata" 
+          target="_blank" 
+          rel="noreferrer" 
+          className="bg-slate-800 p-2.5 rounded-full text-slate-400 hover:bg-black hover:text-white transition-all hover:-translate-y-1">
+          <svg 
+            className="w-5 h-5" 
+            fill="currentColor" 
+            viewBox="0 0 24 24" 
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.01.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.23-1.13 4.41-2.92 5.72-1.74 1.28-4.08 1.6-6.15 1.05-2.07-.56-3.8-2.06-4.6-4.01-.81-1.95-.69-4.28.32-6.13 1.01-1.85 2.87-3.23 4.96-3.64 2.11-.42 4.36-.08 6.22 1.01v4.21c-1.18-.7-2.6-.96-3.95-.63-1.34.34-2.48 1.25-3.09 2.47-.61 1.23-.62 2.7-.03 3.93.59 1.22 1.73 2.13 3.07 2.46 1.34.33 2.8.05 3.93-.7 1.13-.74 1.86-1.99 1.94-3.32.14-2.73.06-5.48.06-8.22-.01-3.8-.01-7.59-.01-11.39z" />
+          </svg>
+        </a>
       </div>
-  );}
+    </div>
+  </div>
+  
+  <div className="container mx-auto px-6 flex flex-col items-center">
+    <div className="w-full h-px bg-slate-800 my-4"></div> 
+    <p className="text-sm text-slate-600">&copy; 2026 PMB STIMATA. All rights reserved.</p>
+  </div>
+</footer>
+    {/* FLOAT WHATSAPP BUTTON */}
+<a href="https://wa.me/6281234567890" // Reminder : nantik ganti nomer e kampus
+  target="_blank" 
+  rel="noreferrer"
+  className="fixed bottom-6 right-6 z-50 bg-amber-500 hover:bg-amber-600 text-white p-4 rounded-full shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-all flex items-center justify-center group">
+  <MessageCircle className="w-6 h-6" />
+  <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ml-2 transition-all duration-300 ease-in-out font-medium text-sm">
+    Tanya Admin
+  </span>
+</a>
+</div>
+);}

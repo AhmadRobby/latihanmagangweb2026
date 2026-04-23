@@ -5,7 +5,7 @@ export function useTitle(title: string) {
     // Simpan title asli (opsional, untuk cleanup)
     const previousTitle = document.title;
 
-    // Ubah title tab browser, tambahkan nama aplikasimu di belakangnya
+    // Ubah title tab browser
     document.title = `${title} | PMB STIMATA`;
 
     // Cleanup function: mengembalikan title ke sebelumnya saat komponen di-unmount
