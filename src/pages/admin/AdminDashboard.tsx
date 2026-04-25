@@ -15,10 +15,12 @@ import {
   LogOut,
   Clock,
   List,
-  ClipboardCheck 
+  ClipboardCheck,
+  Search,
+  UserPlus
 } from "lucide-react";
 
-// Tipe data untuk statistik
+// Update tipe data untuk memasukkan list pendaftar terbaru
 interface AdminStats {
   totalPendaftar: number;
   reguler: number;
@@ -27,6 +29,7 @@ interface AdminStats {
   menungguPembayaran: number;
   menungguSeleksiKip: number; 
   grafikPendaftar: { tanggal: string; jumlah: number }[];
+  pendaftarTerbaru: { nama: string; jalur: string; waktu: string; status: string }[];
 }
 
 export default function AdminDashboard() {
@@ -37,7 +40,7 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulasi pemanggilan API: GET /admin/stats
+    // Simulasi pemanggilan API
     const fetchStats = async () => {
       setIsLoading(true);
       try {
@@ -58,6 +61,12 @@ export default function AdminDashboard() {
             { tanggal: "22 Mei", jumlah: 42 },
             { tanggal: "23 Mei", jumlah: 28 },
             { tanggal: "24 Mei", jumlah: 50 },
+          ],
+          pendaftarTerbaru: [
+            { nama: "Budi Santoso", jalur: "Reguler", waktu: "10 menit lalu", status: "Menunggu Pembayaran" },
+            { nama: "Siti Aminah", jalur: "KIP Kuliah", waktu: "35 menit lalu", status: "Menunggu Verifikasi" },
+            { nama: "Andi Wijaya", jalur: "Reguler", waktu: "1 jam lalu", status: "Diterima" },
+            { nama: "Rina Permata", jalur: "KIP Kuliah", waktu: "2 jam lalu", status: "Seleksi KIP" },
           ]
         };
         setStats(mockData);
@@ -97,29 +106,44 @@ export default function AdminDashboard() {
             </div>
             <h1 className="text-xl font-bold text-white tracking-tight">Admin</h1>
           </div>
-          <Button 
-            onClick={handleLogout} 
-            variant="ghost" 
-            className="text-amber-50 hover:text-white hover:bg-amber-700">
-            <LogOut className="w-4 h-4 mr-2" /> Logout
-          </Button>
+          
+          <div className="flex items-center gap-4">
+            {/* Search Bar */}
+            <div className="hidden sm:block relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-200" />
+              <input
+                type="text"
+                placeholder="Cari pendaftar..."
+                className="pl-9 pr-4 py-1.5 bg-amber-700 border-transparent text-white placeholder:text-amber-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 w-64 transition-all"
+              />
+            </div>
+
+            <Button 
+              onClick={handleLogout} 
+              variant="ghost" 
+              className="text-amber-50 hover:text-white hover:bg-amber-700">
+              <LogOut className="w-4 h-4 mr-2" /> Logout
+            </Button>
+          </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
         
-        {/* BAGIAN JUDUL & TOMBOL KE DATA PENDAFTAR */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* BAGIAN JUDUL & ACTIONS */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-slate-800">Overview Pendaftaran</h2>
             <p className="text-slate-500 mt-1">Pantau statistik penerimaan mahasiswa baru hari ini.</p>
           </div>
-          <Button 
-            onClick={() => navigate('/admin/pendaftar')}
-            className="bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-2"
-          >
-            <List className="w-4 h-4" /> Lihat Semua Pendaftar
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button 
+              onClick={() => navigate('/admin/pendaftar')}
+              className="bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-2"
+            >
+              <List className="w-4 h-4" /> Kelola Pendaftar
+            </Button>
+          </div>
         </div>
 
         {/* STATISTIK UTAMA (CARDS) */}
@@ -163,44 +187,87 @@ export default function AdminDashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          {/* GRAFIK PENDAFTAR */}
-          <Card className="lg:col-span-2 shadow-sm border-slate-200">
-            <CardHeader className="pb-2 border-b border-slate-100">
-              <CardTitle className="text-lg font-semibold text-slate-800">Grafik Pendaftar (7 Hari Terakhir)</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="h-64 flex items-end justify-between gap-2 sm:gap-4 w-full">
-                {stats.grafikPendaftar.map((item, index) => {
-                  const heightPercent = (item.jumlah / maxPendaftar) * 100;
-                  return (
-                    <div key={index} className="flex flex-col items-center flex-1 h-full justify-end group relative">
-                      
-                      {/* Tooltip Hover */}
-                      <div className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-slate-800 text-white text-xs px-2 py-1 rounded transition-opacity whitespace-nowrap z-10 pointer-events-none">
-                        {item.jumlah} Pendaftar
-                      </div>
-                      
-                      <div className="w-full h-full max-w-[40px] bg-amber-100 group-hover:bg-amber-200 rounded-t-md relative flex items-end justify-center transition-colors">
+          {/* GRAFIK & AKTIVITAS */}
+          <div className="lg:col-span-2 space-y-6">
+            
+            {/* GRAFIK PENDAFTAR */}
+            <Card className="shadow-sm border-slate-200">
+              <CardHeader className="pb-2 border-b border-slate-100">
+                <CardTitle className="text-lg font-semibold text-slate-800">Tren Pendaftar (7 Hari Terakhir)</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="h-64 flex items-end justify-between gap-2 sm:gap-4 w-full">
+                  {stats.grafikPendaftar.map((item, index) => {
+                    const heightPercent = (item.jumlah / maxPendaftar) * 100;
+                    return (
+                      <div key={index} className="flex flex-col items-center flex-1 h-full justify-end group relative">
+                        <div className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-slate-800 text-white text-xs px-2 py-1 rounded transition-opacity whitespace-nowrap z-10 pointer-events-none">
+                          {item.jumlah} Pendaftar
+                        </div>
                         
-                        {/* Bar Utama */}
-                        <div 
-                          className="w-full bg-amber-500 group-hover:bg-amber-600 rounded-t-md transition-all duration-700 ease-out" 
-                          style={{ height: `${heightPercent}%` }}>
+                        <div className="w-full h-full max-w-[40px] bg-amber-100 group-hover:bg-amber-200 rounded-t-md relative flex items-end justify-center transition-colors">
+                          {/* Bar Utama */}
+                          <div 
+                            className="w-full bg-amber-500 group-hover:bg-amber-600 rounded-t-md transition-all duration-700 ease-out" 
+                            style={{ height: `${heightPercent}%` }}>
+                          </div>
+                        </div>
+                        
+                        <span className="text-[10px] sm:text-xs font-medium text-slate-500 mt-3 whitespace-nowrap">
+                          {item.tanggal}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* TABEL AKTIVITAS TERBARU */}
+            <Card className="shadow-sm border-slate-200">
+              <CardHeader className="pb-3 border-b border-slate-100 flex flex-row items-center justify-between">
+                <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-amber-500" /> Pendaftar Terbaru
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="divide-y divide-slate-100">
+                  {stats.pendaftarTerbaru.map((pendaftar, idx) => (
+                    <div key={idx} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-slate-50 transition-colors">
+                      <div className="flex items-center gap-3 mb-2 sm:mb-0">
+                        <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600">
+                          {pendaftar.nama.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-800 text-sm">{pendaftar.nama}</p>
+                          <div className="flex items-center gap-2 text-xs text-slate-500">
+                            <span className="font-medium text-amber-600">{pendaftar.jalur}</span>
+                            <span>•</span>
+                            <span>{pendaftar.waktu}</span>
+                          </div>
                         </div>
                       </div>
-                      
-                      {/* Label Tanggal */}
-                      <span className="text-[10px] sm:text-xs font-medium text-slate-500 mt-3 whitespace-nowrap">
-                        {item.tanggal}
+                      <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap w-fit
+                        ${pendaftar.status.includes('Diterima') ? 'bg-emerald-100 text-emerald-700' : 
+                          pendaftar.status.includes('Verifikasi') ? 'bg-amber-100 text-amber-700' :
+                          pendaftar.status.includes('Pembayaran') ? 'bg-orange-100 text-orange-700' :
+                          'bg-blue-100 text-blue-700'}`}>
+                        {pendaftar.status}
                       </span>
                     </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
+                  ))}
+                </div>
+                <div className="p-3 bg-slate-50 text-center border-t border-slate-100">
+                  <button onClick={() => navigate('/admin/pendaftar')} className="text-sm font-semibold text-amber-600 hover:text-amber-700">
+                    Lihat Semua Log Aktivitas
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* SHORTCUTS */}
+          </div>
+
+          {/* SHORTCUTS / TO DO LIST */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-slate-800 flex items-center">
               <Clock className="w-5 h-5 mr-2 text-amber-500" /> Butuh Tindakan
@@ -221,7 +288,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <Button 
-                  onClick={() => alert("Navigasi ke halaman Review Dokumen")} 
+                  onClick={() => navigate('/admin/dokumen')} 
                   variant="outline" 
                   className="w-full mt-4 text-amber-700 border-amber-200 hover:bg-amber-50">
                   Review Berkas <ArrowRight className="w-4 h-4 ml-2" />

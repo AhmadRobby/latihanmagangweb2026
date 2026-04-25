@@ -11,6 +11,7 @@ import AdminPendaftar from "./pages/admin/AdminPendaftar";
 import AdminDetailPendaftar from "./pages/admin/AdminDetailPendaftar";
 import AdminSeleksi from "./pages/admin/AdminSeleksi";
 import AdminPembayaran from "./pages/admin/AdminPembayaran"; 
+import AdminDokumen from "./pages/admin/AdminDokumen";
 
 import LandingPage from "./pages/LandingPage";
 import DaftarPilihJalur from "./pages/daftar/DaftarPilihJalur"; 
@@ -62,6 +63,7 @@ function App() {
           <Route path="/admin/pendaftar/:id" element={<AdminDetailPendaftar />} />
           <Route path="/admin/seleksi" element={<AdminSeleksi />} />
           <Route path="/admin/pembayaran" element={<AdminPembayaran />} />
+          <Route path="/admin/dokumen" element={<AdminDokumen />} />
         </Route>
       </Routes>
     </Router>

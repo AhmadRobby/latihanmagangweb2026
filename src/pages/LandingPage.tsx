@@ -113,7 +113,7 @@ export default function LandingPage() {
             <div className="relative z-10 aspect-video rounded-3xl overflow-hidden shadow-2xl border-2 border-white bg-slate-100 transform transition-transform duration-500 group-hover:scale-[1.02]">
               <iframe
                 className="absolute inset-0 w-full h-full object-cover pointer-events-auto"
-                src="https://www.youtube.com/embed/agneRtEe-t8?si=Po0b6qjG3p9hSjW0"
+                src="https://www.youtube.com/embed/MwMil5iUQv8?si=a-nNbopDWbejEpuG" 
                 title="STIMATA Campus Tour"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
