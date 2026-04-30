@@ -43,20 +43,22 @@ interface Applicant {
   documents: Document[];
 }
 
-// Data Dummy (Ditambah Sertifikat & File URL)
+// Data Dummy (Disesuaikan dengan field di UploadDokumen)
 const MOCK_APPLICANTS: Applicant[] = [
   {
     id: "1",
     regNumber: "PMB25010",
     name: "Siti Aminah",
-    track: "KIP Kuliah",
+    track: "KIP",
     submittedAt: "24 Mei 2026, 09:15",
     documents: [
-      { id: "d1", name: "KTP / Kartu Pelajar", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x400/e2e8f0/475569?text=Preview+KTP" },
-      { id: "d2", name: "Kartu Keluarga (KK)", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x800/e2e8f0/475569?text=Preview+KK" },
-      { id: "d3", name: "Ijazah / SKL", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x800/e2e8f0/475569?text=Preview+Ijazah" },
-      { id: "d4", name: "Pas Foto 3x4", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/400x600/e2e8f0/475569?text=Pas+Foto" },
-      { id: "d5", name: "Sertifikat Prestasi", status: "PENDING", note: "", isRequired: false, fileUrl: "https://placehold.co/800x600/e2e8f0/475569?text=Sertifikat+Juara+1" },
+      { id: "d1", name: "Scan Ijazah Asli / SKL", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x800/e2e8f0/475569?text=Preview+Ijazah" },
+      { id: "d2", name: "Kartu Keluarga (KK)", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/800x600/e2e8f0/475569?text=Preview+KK" },
+      { id: "d3", name: "Pas Foto Berwarna 4x6", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/400x600/e2e8f0/475569?text=Pas+Foto" },
+      { id: "d4", name: "Kartu KIP / KKS / SKTM", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x400/e2e8f0/475569?text=Preview+KIP" },
+      { id: "d5", name: "Foto Rumah 1 (Depan)", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/800x600/e2e8f0/475569?text=Rumah+Depan" },
+      { id: "d6", name: "Foto Rumah 2 (Ruang Tamu)", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/800x600/e2e8f0/475569?text=Ruang+Tamu" },
+      { id: "d7", name: "Sertifikat", status: "PENDING", note: "", isRequired: false, fileUrl: "https://placehold.co/800x600/e2e8f0/475569?text=Sertifikat+Juara+1" },
     ]
   },
   {
@@ -66,11 +68,10 @@ const MOCK_APPLICANTS: Applicant[] = [
     track: "Reguler",
     submittedAt: "24 Mei 2026, 10:30",
     documents: [
-      { id: "d1", name: "KTP / Kartu Pelajar", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x400/e2e8f0/475569?text=Preview+KTP" },
-      { id: "d2", name: "Kartu Keluarga (KK)", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x800/e2e8f0/475569?text=Preview+KK" },
-      { id: "d3", name: "Ijazah / SKL", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x800/e2e8f0/475569?text=Preview+Ijazah" },
-      { id: "d4", name: "Pas Foto 3x4", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/400x600/e2e8f0/475569?text=Pas+Foto" },
-      // Contoh pendaftar yang tidak mengunggah sertifikat (opsional tidak ada di list/kosong)
+      { id: "d1", name: "Scan Ijazah Asli / SKL", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x800/e2e8f0/475569?text=Preview+Ijazah" },
+      { id: "d2", name: "Kartu Keluarga (KK)", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/800x600/e2e8f0/475569?text=Preview+KK" },
+      { id: "d3", name: "Pas Foto Berwarna 4x6", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/400x600/e2e8f0/475569?text=Pas+Foto" },
+      { id: "d4", name: "Sertifikat", status: "PENDING", note: "", isRequired: false, fileUrl: "https://placehold.co/800x600/e2e8f0/475569?text=Sertifikat+Organisasi" },
     ]
   }
 ];

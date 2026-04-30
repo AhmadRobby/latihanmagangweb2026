@@ -24,6 +24,7 @@ type StatusPengumuman = "MENUNGGU" | "LOLOS" | "TIDAK_LOLOS";
 export default function PengumumanKip() {
   const navigate = useNavigate();
   useTitle("Pengumuman KIPK");
+  
   // STATE SIMULASI: Ubah default state di sini atau gunakan tombol simulator di UI
   const [status, setStatus] = useState<StatusPengumuman>("MENUNGGU");
   
@@ -35,11 +36,27 @@ export default function PengumumanKip() {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      // Di sini kamu bisa tambahkan logika upload ke server/API nantinya
     }
   };
 
-  // Mock Data Jadwal Ujian & Wawancara
+  // Logika selesai dan kembali ke dashboard
+  const handleSelesai = () => {
+    if (selectedFile) {
+      localStorage.setItem("statusPendaftaran", "REVIEW");
+      navigate("/dashboard");
+    }
+  };
+
+  // Logika kembali (Tombol Back)
+  const handleKembali = () => {
+    const currentStatus = localStorage.getItem("statusPendaftaran");
+    if (!currentStatus || currentStatus === "DRAFT") {
+      localStorage.setItem("statusPendaftaran", "SELEKSI");
+    }
+    navigate("/dashboard");
+  };
+
+  // Mock Data Jadwal Ujian & Wawancara (Task Poin 2)
   const jadwalSeleksi = [
     {
       kegiatan: "Ujian Tulis Berbasis Komputer (UTBK)",
@@ -64,7 +81,7 @@ export default function PengumumanKip() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button 
-              onClick={() => navigate("/dashboard")} 
+              onClick={handleKembali} 
               variant="ghost" 
               size="icon"
               className="text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-full">
@@ -78,7 +95,7 @@ export default function PengumumanKip() {
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
         
-        {/* DEV TOOLS SIMULATOR */}
+        {/* DEV TOOLS SIMULATOR (Task Poin 1: Test Semua Kondisi) */}
         <div className="bg-slate-800 p-3 rounded-lg flex items-center justify-between shadow-md mb-8">
           <span className="text-slate-300 text-sm font-medium flex items-center">
             <Info className="w-4 h-4 mr-2" /> Simulator Status (Dev Only):
@@ -90,7 +107,7 @@ export default function PengumumanKip() {
           </div>
         </div>
 
-        {/* --- KONDISI 1: MENUNGGU PENGUMUMAN --- */}
+        {/* MENUNGGU PENGUMUMAN */}
         {status === "MENUNGGU" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <Card className="border-amber-200 bg-amber-50 shadow-sm">
@@ -105,6 +122,7 @@ export default function PengumumanKip() {
               </CardContent>
             </Card>
 
+            {/* Info Jadwal Seleksi/Ujian */}
             <h3 className="text-lg font-bold text-slate-800 px-1 mt-8">Jadwal Seleksi Anda</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {jadwalSeleksi.map((jadwal, i) => (
@@ -135,7 +153,7 @@ export default function PengumumanKip() {
           </div>
         )}
 
-        {/* --- KONDISI 2: LOLOS SELEKSI --- */}
+        {/* LOLOS SELEKSI */}
         {status === "LOLOS" && (
           <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
             <Card className="border-emerald-200 bg-emerald-50 shadow-sm overflow-hidden relative">
@@ -157,27 +175,32 @@ export default function PengumumanKip() {
             <Card className="shadow-sm border-slate-200">
               <CardContent className="p-0">
                 <div className="divide-y divide-slate-100">
+                  
+                  {/* LANGKAH 1: Registrasi Ulang */}
                   <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-start gap-4">
                       <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 font-bold flex items-center justify-center shrink-0 mt-1">1</div>
                       <div>
-                        <h4 className="font-bold text-slate-800">Registrasi Ulang Mahasiswa Baru</h4>
-                        <p className="text-sm text-slate-500 mt-1">Lengkapi data diri tambahan dan cetak KTM (Kartu Tanda Mahasiswa) sementara.</p>
+                        <h4 className="font-bold text-slate-800">Panduan Registrasi Ulang</h4>
+                        <p className="text-sm text-slate-500 mt-1">Unduh panduan registrasi ulang dan lakukan penyelesaian administrasi matrikulasi.</p>
                       </div>
                     </div>
-                    <Button className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white shrink-0">
-                      Mulai Registrasi <ArrowRight className="w-4 h-4 ml-2" />
+                    <Button 
+                      variant="outline" 
+                      onClick={() => alert("Mengunduh panduan_registrasi_ulang.pdf...")}
+                      className="w-full sm:w-auto text-amber-600 border-amber-300 hover:bg-amber-50 shrink-0">
+                      <Download className="w-4 h-4 mr-2" /> Download Panduan
                     </Button>
                   </div>
                   
-                  {/* UPDATE BAGIAN SINI: Unduh & Upload */}
-                  <div className="p-6 flex flex-col sm:flex-row items-start justify-between gap-4">
+                  {/* LANGKAH 2: Upload Bukti Matrikulasi */}
+                  <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-start gap-4">
                       <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 font-bold flex items-center justify-center shrink-0 mt-1">2</div>
                       <div>
-                        <h4 className="font-bold text-slate-800">Unduh & Upload Surat Pernyataan</h4>
+                        <h4 className="font-bold text-slate-800">Upload Bukti Matrikulasi</h4>
                         <p className="text-sm text-slate-500 mt-1">
-                          Unduh format surat pernyataan kesediaan, cetak dan tandatangani (bermaterai). Setelah itu, unggah kembali hasil scan/foto dokumen tersebut.
+                          Unggah bukti pembayaran atau penyelesaian matrikulasi Anda.
                         </p>
                         {selectedFile && (
                           <p className="text-xs font-medium text-emerald-600 mt-2 flex items-center">
@@ -196,29 +219,45 @@ export default function PengumumanKip() {
                       accept=".pdf,.jpg,.jpeg,.png"
                     />
                     
-                    {/* Tombol Download dan Upload */}
-                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0 mt-2 sm:mt-0">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => alert("Mengunduh format_surat_pernyataan.pdf...")}
-                        className="w-full sm:w-auto text-amber-600 border-amber-300 hover:bg-amber-50">
-                        <Download className="w-4 h-4 mr-2" /> Download Format
-                      </Button>
-                      <Button 
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white">
-                        <FileUp className="w-4 h-4 mr-2" /> 
-                        {selectedFile ? "Ganti File" : "Upload Scan"}
-                      </Button>
-                    </div>
+                    <Button 
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white shrink-0">
+                      <FileUp className="w-4 h-4 mr-2" /> 
+                      {selectedFile ? "Ganti File" : "Upload Bukti"}
+                    </Button>
                   </div>
+
+                  {/* LANGKAH 3: Selesai & Kembali ke Dashboard */}
+                  <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className={`w-8 h-8 rounded-full font-bold flex items-center justify-center shrink-0 mt-1 transition-colors ${selectedFile ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400'}`}>3</div>
+                      <div>
+                        <h4 className={`font-bold transition-colors ${selectedFile ? 'text-slate-800' : 'text-slate-400'}`}>
+                          Selesaikan Proses
+                        </h4>
+                        <p className="text-sm text-slate-500 mt-1">
+                          {selectedFile 
+                            ? "Dokumen siap. Klik tombol di samping untuk kembali ke Dashboard." 
+                            : "Selesaikan Langkah 2 terlebih dahulu untuk mengaktifkan tombol ini."}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      onClick={handleSelesai}
+                      disabled={!selectedFile}
+                      className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white shrink-0 disabled:bg-slate-200 disabled:text-slate-400">
+                      Selesai & Kembali <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
+
                 </div>
               </CardContent>
             </Card>
           </div>
         )}
 
-        {/* --- KONDISI 3: TIDAK LOLOS --- */}
+        {/* TIDAK LOLOS */}
         {status === "TIDAK_LOLOS" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
             <Card className="border-red-200 bg-red-50 shadow-sm">

@@ -33,7 +33,10 @@ export default function UploadDokumen() {
   const [jalur, setJalur] = useState("Reguler");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // for Sertifikat Opsional
+  // State untuk Multi-file Wajib KIP (Foto Rumah)
+  const [fotoRumah, setFotoRumah] = useState<{ name: string }[]>([]);
+
+  // State untuk Sertifikat Opsional
   const [certificates, setCertificates] = useState<{ name: string }[]>([]);
 
   const [documents, setDocuments] = useState<DocumentItem[]>([
@@ -126,6 +129,44 @@ export default function UploadDokumen() {
     }));
   };
 
+  const handleFotoRumahChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrorMsg("");
+    const files = Array.from(e.target.files || []);
+    
+    if (files.length === 0) return;
+
+    if (fotoRumah.length + files.length > 4) {
+      setErrorMsg("Maksimal hanya bisa upload 4 foto rumah.");
+      e.target.value = "";
+      return;
+    }
+
+    const validFiles: { name: string }[] = [];
+    let hasError = false;
+
+    files.forEach(file => {
+      const fileSizeMB = file.size / (1024 * 1024);
+      const fileExt = `.${file.name.split('.').pop()?.toLowerCase()}`;
+      
+      if (fileSizeMB > 2 || !['.jpg', '.jpeg', '.png'].includes(fileExt)) {
+        hasError = true;
+      } else {
+        validFiles.push({ name: file.name });
+      }
+    });
+
+    if (hasError) {
+      setErrorMsg("Beberapa file foto ditolak karena ukuran lebih dari 2MB atau format tidak sesuai (.jpg/.png).");
+    }
+
+    setFotoRumah(prev => [...prev, ...validFiles]);
+    e.target.value = "";
+  };
+
+  const removeFotoRumah = (indexToRemove: number) => {
+    setFotoRumah(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
+
   // Handler untuk Multiple Upload Sertifikat (Opsional)
   const handleCertificateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setErrorMsg("");
@@ -133,7 +174,6 @@ export default function UploadDokumen() {
     
     if (files.length === 0) return;
 
-    // Cek batas maksimal (sebelumnya + yang baru dipilih)
     if (certificates.length + files.length > 3) {
       setErrorMsg("Maksimal hanya bisa upload 3 gambar sertifikat.");
       e.target.value = "";
@@ -159,10 +199,9 @@ export default function UploadDokumen() {
     }
 
     setCertificates(prev => [...prev, ...validFiles]);
-    e.target.value = ""; // Reset input
+    e.target.value = "";
   };
 
-  // Handler for menghapus sertifikat yang udah dipilih
   const removeCertificate = (indexToRemove: number) => {
     setCertificates(prev => prev.filter((_, index) => index !== indexToRemove));
   };
@@ -173,11 +212,25 @@ export default function UploadDokumen() {
     }
   };
 
-  const isAllUploaded = documents.every(d => d.status === "TERUPLOAD");
+  // Handler untuk tombol Kembali
+  const handleKembali = () => {
+    // Pastikan saat kembali, status tidak kere-set ke DRAFT
+    const currentStatus = localStorage.getItem("statusPendaftaran");
+    if (currentStatus !== "SELEKSI" && currentStatus !== "REVIEW") {
+      localStorage.setItem("statusPendaftaran", "SUBMITTED");
+    }
+    navigate(-1);
+  };
+
+  // Validasi: Semua dokumen basic terupload + (Jika KIP, foto rumah min 2)
+  const isBasicDocsUploaded = documents.every(d => d.status === "TERUPLOAD");
+  const isKipDocsUploaded = jalur === "KIP" ? fotoRumah.length >= 2 : true;
+  const isAllUploaded = isBasicDocsUploaded && isKipDocsUploaded;
 
   const handleSubmit = () => {
-    alert("Berkas telah berhasil dikirim! Silakan tunggu proses verifikasi oleh Admin.");
-    localStorage.setItem("statusPendaftaran", "REVIEW");
+    alert("Berkas telah berhasil dikirim! Anda akan masuk ke tahap Seleksi.");
+    // Langsung arahkan status ke SELEKSI sesuai permintaan
+    localStorage.setItem("statusPendaftaran", "SELEKSI");
     navigate("/dashboard");
   };
 
@@ -239,7 +292,7 @@ export default function UploadDokumen() {
           </div>
         )}
 
-        {/* DOKUMEN WAJIB */}
+        {/* DOKUMEN WAJIB BASIC */}
         <div className="space-y-4">
           {documents.map((doc) => {
             const Icon = doc.icon;
@@ -313,6 +366,77 @@ export default function UploadDokumen() {
           })}
         </div>
 
+        {/* FOTO RUMAH (MULTI-FILE) */}
+        {jalur === "KIP" && (
+          <div className="mt-4 bg-white border border-gray-200 rounded-xl p-5 shadow-sm transition-all hover:shadow-md">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                  <ImageIcon className="w-6 h-6 text-slate-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-800">Foto Rumah </h3>
+                  <p className="text-xs text-slate-500">Wajib upload minimal 2 foto (Depan rumah & Ruang Tamu). Max 4 Foto.</p>
+                </div>
+              </div>
+
+              <div>
+                {fotoRumah.length < 2 ? (
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                    Belum Lengkap ({fotoRumah.length}/2)
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Memenuhi Syarat
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              {fotoRumah.length > 0 && (
+                <div className="space-y-2 mb-2">
+                  {fotoRumah.map((foto, index) => (
+                    <div key={index} className="flex items-center justify-between bg-slate-50 py-2 px-3 rounded-md border border-slate-200 max-w-sm">
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <ImageIcon className="w-4 h-4 text-slate-400 shrink-0" />
+                        <span className="text-sm text-slate-700 truncate">{foto.name}</span>
+                      </div>
+                      <button 
+                        onClick={() => removeFotoRumah(index)}
+                        className="text-slate-400 hover:text-red-500 p-1 rounded-md transition-colors"
+                        title="Hapus" >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {fotoRumah.length < 4 && (
+                <div>
+                  <input
+                    type="file"
+                    id="file-fotorumah"
+                    className="hidden"
+                    accept=".jpg,.jpeg,.png"
+                    multiple 
+                    onChange={handleFotoRumahChange}/>
+                  <label 
+                    htmlFor="file-fotorumah"
+                    className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg cursor-pointer bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors">
+                    <UploadCloud className="w-4 h-4 mr-2" /> 
+                    {fotoRumah.length === 0 ? "Pilih Foto" : "Tambah Foto Lagi"}
+                  </label>
+                  <span className="ml-3 text-xs text-slate-500">
+                    ({fotoRumah.length}/4 Terupload)
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* DOKUMEN OPSIONAL (SERTIFIKAT) */}
         <div className="mt-8">
           <h2 className="text-lg font-bold text-slate-900 mb-4">Dokumen Pendukung (Opsional)</h2>
@@ -337,7 +461,6 @@ export default function UploadDokumen() {
             </div>
 
             <div className="flex flex-col gap-3">
-              {/* LIST */}
               {certificates.length > 0 && (
                 <div className="space-y-2 mb-2">
                   {certificates.map((cert, index) => (
@@ -384,7 +507,7 @@ export default function UploadDokumen() {
         {/* ACTION BUTTONS */}
         <div className="mt-8 pt-6 border-t border-gray-200 flex items-center justify-between">
           <button 
-            onClick={() => navigate(-1)} 
+            onClick={handleKembali} 
             className="text-slate-500 hover:text-slate-800 text-sm font-medium px-4 py-2"> Kembali
           </button>
           
