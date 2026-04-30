@@ -4,6 +4,12 @@ import { useTitle } from "@/hooks/useTitle";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle 
+} from "@/components/ui/dialog";
+import { 
   ArrowLeft, 
   Search, 
   Eye, 
@@ -12,10 +18,11 @@ import {
   AlertCircle, 
   FileText,
   Save,
-  Check
+  Check,
+  Maximize2
 } from "lucide-react";
 
-// Tipe Data Dummy
+// Tipe Data
 type DocStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 interface Document {
@@ -23,6 +30,8 @@ interface Document {
   name: string;
   status: DocStatus;
   note: string;
+  isRequired: boolean;
+  fileUrl: string; // URL untuk preview gambar/pdf
 }
 
 interface Applicant {
@@ -34,7 +43,7 @@ interface Applicant {
   documents: Document[];
 }
 
-// Data Dummy
+// Data Dummy (Ditambah Sertifikat & File URL)
 const MOCK_APPLICANTS: Applicant[] = [
   {
     id: "1",
@@ -43,10 +52,11 @@ const MOCK_APPLICANTS: Applicant[] = [
     track: "KIP Kuliah",
     submittedAt: "24 Mei 2026, 09:15",
     documents: [
-      { id: "d1", name: "KTP / Kartu Pelajar", status: "PENDING", note: "" },
-      { id: "d2", name: "Kartu Keluarga (KK)", status: "PENDING", note: "" },
-      { id: "d3", name: "Ijazah / SKL", status: "PENDING", note: "" },
-      { id: "d4", name: "Pas Foto 3x4", status: "PENDING", note: "" },
+      { id: "d1", name: "KTP / Kartu Pelajar", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x400/e2e8f0/475569?text=Preview+KTP" },
+      { id: "d2", name: "Kartu Keluarga (KK)", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x800/e2e8f0/475569?text=Preview+KK" },
+      { id: "d3", name: "Ijazah / SKL", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x800/e2e8f0/475569?text=Preview+Ijazah" },
+      { id: "d4", name: "Pas Foto 3x4", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/400x600/e2e8f0/475569?text=Pas+Foto" },
+      { id: "d5", name: "Sertifikat Prestasi", status: "PENDING", note: "", isRequired: false, fileUrl: "https://placehold.co/800x600/e2e8f0/475569?text=Sertifikat+Juara+1" },
     ]
   },
   {
@@ -56,10 +66,11 @@ const MOCK_APPLICANTS: Applicant[] = [
     track: "Reguler",
     submittedAt: "24 Mei 2026, 10:30",
     documents: [
-      { id: "d1", name: "KTP / Kartu Pelajar", status: "PENDING", note: "" },
-      { id: "d2", name: "Kartu Keluarga (KK)", status: "PENDING", note: "" },
-      { id: "d3", name: "Ijazah / SKL", status: "PENDING", note: "" },
-      { id: "d4", name: "Pas Foto 3x4", status: "PENDING", note: "" },
+      { id: "d1", name: "KTP / Kartu Pelajar", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x400/e2e8f0/475569?text=Preview+KTP" },
+      { id: "d2", name: "Kartu Keluarga (KK)", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x800/e2e8f0/475569?text=Preview+KK" },
+      { id: "d3", name: "Ijazah / SKL", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/600x800/e2e8f0/475569?text=Preview+Ijazah" },
+      { id: "d4", name: "Pas Foto 3x4", status: "PENDING", note: "", isRequired: true, fileUrl: "https://placehold.co/400x600/e2e8f0/475569?text=Pas+Foto" },
+      // Contoh pendaftar yang tidak mengunggah sertifikat (opsional tidak ada di list/kosong)
     ]
   }
 ];
@@ -71,6 +82,9 @@ export default function AdminDokumen() {
   const [applicants, setApplicants] = useState<Applicant[]>(MOCK_APPLICANTS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
+  
+  // State untuk Modal Preview Dokumen
+  const [previewDoc, setPreviewDoc] = useState<Document | null>(null);
 
   // Filter pencarian
   const filteredApplicants = applicants.filter(app => 
@@ -93,10 +107,14 @@ export default function AdminDokumen() {
   const handleSaveReview = () => {
     if (!selectedApplicant) return;
 
-    // Cek ada dokumen yang PENDING atau tidakk
-    const hasPending = selectedApplicant.documents.some(d => d.status === "PENDING");
-    if (hasPending) {
-      alert("Harap periksa semua dokumen sebelum menyimpan!");
+    // Cek ada dokumen WAJIB yang PENDING atau tidak
+    // Dokumen opsional (isRequired: false) boleh diabaikan
+    const hasPendingRequired = selectedApplicant.documents.some(
+      d => d.isRequired && d.status === "PENDING"
+    );
+    
+    if (hasPendingRequired) {
+      alert("Harap periksa semua dokumen wajib sebelum menyimpan!");
       return;
     }
 
@@ -210,16 +228,22 @@ export default function AdminDokumen() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {selectedApplicant.documents.map((doc) => (
-            <Card key={doc.id} className={`shadow-sm transition-colors border-2 ${
+            <Card key={doc.id} className={`shadow-sm transition-colors border-2 relative overflow-hidden ${
               doc.status === "APPROVED" ? "border-emerald-200 bg-emerald-50/30" : 
               doc.status === "REJECTED" ? "border-red-200 bg-red-50/30" : 
               "border-transparent bg-white"
             }`}>
-              <CardContent className="p-5">
+              <CardContent className="p-5 relative z-10">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-slate-400" />
-                    <h3 className="font-semibold text-slate-800">{doc.name}</h3>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-slate-400" />
+                      <h3 className="font-semibold text-slate-800">{doc.name}</h3>
+                    </div>
+                    {/* Badge Opsional/Wajib */}
+                    <span className="text-[10px] uppercase font-bold text-slate-400 mt-1 pl-7">
+                      {doc.isRequired ? "*Wajib" : "(Opsional)"}
+                    </span>
                   </div>
                   
                   {/* Status Badge */}
@@ -228,11 +252,19 @@ export default function AdminDokumen() {
                   {doc.status === "PENDING" && <span className="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-1 rounded uppercase">Belum Dicek</span>}
                 </div>
 
-                {/* Simulasi Preview Dokumen */}
-                <div className="w-full h-40 bg-slate-100 border border-slate-200 rounded-md flex items-center justify-center mb-4 cursor-pointer hover:bg-slate-200 transition-colors">
-                  <div className="text-center">
-                    <Eye className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                    <span className="text-sm font-medium text-slate-500">Klik untuk lihat file</span>
+                {/* PREVIEW DOKUMEN */}
+                <div 
+                  onClick={() => setPreviewDoc(doc)}
+                  className="w-full h-40 bg-slate-100 border border-slate-200 rounded-md flex flex-col items-center justify-center mb-4 cursor-pointer hover:bg-slate-200 hover:border-amber-300 transition-all group overflow-hidden relative"
+                >
+                  {/* Blur Background Image */}
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-multiply filter blur-[2px]"
+                    style={{ backgroundImage: `url(${doc.fileUrl})` }}
+                  />
+                  <div className="text-center relative z-10 p-3 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm border border-slate-200 group-hover:scale-105 transition-transform">
+                    <Maximize2 className="w-6 h-6 text-slate-500 mx-auto mb-1 group-hover:text-amber-500" />
+                    <span className="text-xs font-medium text-slate-600 group-hover:text-amber-600">Klik untuk perbesar</span>
                   </div>
                 </div>
 
@@ -256,7 +288,7 @@ export default function AdminDokumen() {
                     </Button>
                   </div>
 
-                  {/* Tampilkan catatan jika ditolak */}
+                  {/* Tampilan catatan jika ditolak adminnn */}
                   {doc.status === "REJECTED" && (
                     <div className="p-3 bg-white border border-red-100 rounded-md flex items-start gap-2">
                       <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
@@ -272,6 +304,27 @@ export default function AdminDokumen() {
           ))}
         </div>
       </main>
+
+      {/* PREVIEW DOKUMEN */}
+      <Dialog open={!!previewDoc} onOpenChange={(open) => !open && setPreviewDoc(null)}>
+        <DialogContent className="sm:max-w-3xl p-0 overflow-hidden bg-slate-900 border-slate-800">
+          <DialogHeader className="p-4 border-b border-slate-800 text-white absolute top-0 left-0 right-0 bg-slate-900/80 backdrop-blur-md z-20">
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-amber-500" />
+              {previewDoc?.name}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="w-full h-[80vh] flex items-center justify-center p-4 bg-slate-900/50 mt-14">
+            {previewDoc && (
+              <img 
+                src={previewDoc.fileUrl} 
+                alt={`Preview ${previewDoc.name}`} 
+                className="max-w-full max-h-full object-contain rounded-md shadow-2xl"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
